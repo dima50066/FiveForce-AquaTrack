@@ -11,6 +11,8 @@ import path from "path";
 
 dotenv.config();
 
+export const SWAGGER_PATH = path.join(process.cwd(), "docs", "swagger.json");
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

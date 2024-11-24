@@ -38,7 +38,7 @@ export const setupServer = () => {
   app.use(cors(corsOptions));
 
   app.use('/uploads', express.static(UPLOAD_DIR));
-  app.use('/users', authRouter);
+  app.use('/auth/users', authRouter);
 
   app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store');

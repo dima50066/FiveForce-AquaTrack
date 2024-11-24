@@ -1,0 +1,123 @@
+tags:
+  - Contacts
+summary: Update a contact by ID
+operationId: patchContact
+description: "Update a contact with new data. Supports file upload for the contact photo."
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: id
+    required: true
+    description: The ID of the contact to update
+    schema:
+      type: string
+      example: "65e4decdd286b30065d54af9"
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          name:
+            description: "Contact's name"
+            type: string
+            example: "John Smith"
+          phoneNumber:
+            description: "Contact's phone number"
+            type: string
+            example: "+380506393659"
+          email:
+            description: "Contact's email address"
+            type: string
+            example: "John@test.com"
+          isFavourite:
+            description: "Indicates if the contact is marked as a favourite"
+            type: boolean
+            default: false
+            example: true
+          contactType:
+            description: "Type of contact"
+            type: string
+            enum: ["work", "home", "personal"]
+            default: "personal"
+            example: "personal"
+          photo:
+            description: "Contact's photo"
+            type: string
+            format: binary
+responses:
+  "200":
+    description: Successfully updated the contact
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully patched the contact!
+            data:
+              type: object
+              required:
+                - _id
+                - name
+                - phoneNumber
+                - email
+                - isFavourite
+                - contactType
+                - createdAt
+                - updatedAt
+              properties:
+                _id:
+                  description: "Contact's id"
+                  type: string
+                  example: "66f86c1b9b12c12e559b32bb"
+                name:
+                  description: "Contact's name"
+                  type: string
+                  example: "Awrgfewf"
+                phoneNumber:
+                  description: "Contact's phone number"
+                  type: string
+                  example: "+380231231212"
+                email:
+                  description: "Contact's email address"
+                  type: string
+                  example: "john.doe@mail.com"
+                isFavourite:
+                  description: "Indicates if the contact is marked as a favourite"
+                  type: boolean
+                  default: false
+                  example: true
+                contactType:
+                  description: "Type of contact"
+                  type: string
+                  enum: ["work", "home", "personal"]
+                  default: "personal"
+                  example: "home"
+                photo:
+                  description: "Contact's photo"
+                  type: string
+                  example: "macro-shot-of-blood-droplets-on-a-leaf-bloody-background-image-photography_1020697-623256.jpg"
+                createdAt:
+                  description: "Timestamp when the contact was created"
+                  type: string
+                  format: date-time
+                  example: "2024-09-28T20:50:35.988+00:00"
+                updatedAt:
+                  description: "Timestamp when the contact was last updated"
+                  type: string
+                  format: date-time
+                  example: "2024-09-28T20:50:35.988+00:00"
+  "401":
+    $ref: "../../../components/responses/401.yaml"
+  "404":
+    $ref: "../../../components/responses/404.yaml"

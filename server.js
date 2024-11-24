@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import { errorHandler } from "./src/middlewares/errorHandler.js";
-import { notFoundHandler } from "./src/middlewares/notFoundHandler.js";
-import router from "./src/routes/index.js";
-import corsOptions from "./src/utils/corsConfig.js";
+import { errorHandler } from "./backend/src/middlewares/errorHandler.js";
+import { notFoundHandler } from "./backend/src/middlewares/notFoundHandler.js";
+import router from "./backend/src/routes/index.js";
+import corsOptions from "./backend/src/utils/corsConfig.js";
 import { fileURLToPath } from "url";
 import path from "path";
 

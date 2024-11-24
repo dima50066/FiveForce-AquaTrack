@@ -1,5 +1,5 @@
 import { setupServer } from "./server.js";
-import { initMongoConnection } from "./src/db/initMongoConnection.js";
+import { initMongoConnection } from "./backend/src/db/initMongoConnection.js";
 
 const bootstrap = async () => {
   try {

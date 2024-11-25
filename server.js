@@ -1,12 +1,12 @@
 import express from "express";
 import cors from "cors";
+import pino from "pino-http";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import pino from "pino-http";
-import { errorHandler } from "./src/middlewares/errorHandler.js";
-import { notFoundHandler } from "./src/middlewares/notFoundHandler.js";
-import router from "./src/routes/index.js";
-import corsOptions from "./src/utils/corsConfig.js";
+import { errorHandler } from "./backend/src/middlewares/errorHandler.js";
+import { notFoundHandler } from "./backend/src/middlewares/notFoundHandler.js";
+import router from "./backend/src/routes/index.js";
+import corsOptions from "./backend/src/utils/corsConfig.js";
 import { fileURLToPath } from "url";
 import path from "path";
 import swaggerDocs from "./src/middlewares/swaggerDocs.js";
@@ -38,7 +38,15 @@ export const setupServer = () => {
 
   app.use(cors(corsOptions));
 
+  app.use(
+    pino({
+      transport: {
+        target: "pino-pretty",
+      },
+    })
+  );
   app.use("/uploads", express.static(UPLOAD_DIR));
+
   app.use(router);
 
   app.use((req, res, next) => {

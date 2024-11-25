@@ -1,6 +1,6 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Types } from 'mongoose';
 
-const startDate = new Date("01/01/2023");
+const startDate = new Date('01/01/2024');
 
 const unixDay = 86400000;
 
@@ -13,7 +13,7 @@ const waterSchema = new Schema(
         validator: function (value) {
           return value <= Date.now() + unixDay;
         },
-        message: "Select a date that does not exceed today!",
+        message: 'Select a date that does not exceed today!',
       },
       required: true,
     },
@@ -25,11 +25,11 @@ const waterSchema = new Schema(
     },
     owner: {
       type: Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
   },
-  { versionKey: false, timestamps: true }
+  { versionKey: false, timestamps: true },
 );
 
-export const Water = model("Water", waterSchema);
+export const Water = model('Water', waterSchema);

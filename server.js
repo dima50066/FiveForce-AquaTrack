@@ -9,21 +9,31 @@ import router from "./backend/src/routes/index.js";
 import corsOptions from "./backend/src/utils/corsConfig.js";
 import { fileURLToPath } from "url";
 import path from "path";
+import swaggerDocs from "./src/middlewares/swaggerDocs.js";
 
 dotenv.config();
+
+export const SWAGGER_PATH = path.join(process.cwd(), "docs", "swagger.json");
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const UPLOAD_DIR = path.join(__dirname, "uploads");
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 console.log(`Running in ${process.env.NODE_ENV || "development"} mode`);
 
 export const setupServer = () => {
   const app = express();
 
   app.use(express.json());
+  app.use(
+    pino({
+      transport: {
+        target: "pino-pretty",
+      },
+    })
+  );
   app.use(cookieParser());
 
   app.use(cors(corsOptions));
@@ -43,6 +53,8 @@ export const setupServer = () => {
     res.set("Cache-Control", "no-store");
     next();
   });
+
+  app.use("/api-docs", swaggerDocs());
 
   app.use(notFoundHandler);
   app.use(errorHandler);

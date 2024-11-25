@@ -1,6 +1,6 @@
-import Joi from "joi";
+import Joi from 'joi';
 
-const startDate = new Date("01/01/2024");
+const startDate = new Date('01/01/2024');
 
 const unixDay = 86400000;
 
@@ -23,5 +23,5 @@ export const updateWaterSchema = () => {
       .min(+startDate)
       .max(Date.now() + unixDay),
     amount: Joi.number().min(10).max(3000),
-  }).or("date", "amount");
+  }).or('date', 'amount');
 };

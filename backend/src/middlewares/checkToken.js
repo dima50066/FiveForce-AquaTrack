@@ -17,11 +17,6 @@ export const checkToken = async (req, res, next) => {
   }
   try {
     const { id } = jwt.verify(token, process.env.JWT_SECRET);
-    // const isExpiredToken = new Date() > session.accessTokenValidUntil;
-    // if (isExpiredToken) {
-    //   next(createHttpError(401, 'Token is expired!'));
-    //   return;
-    //   };
     const user = await findUserById(id);
     if (!user || !user.token) {
       next(createHttpError(401, 'User not found'));

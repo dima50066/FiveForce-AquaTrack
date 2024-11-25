@@ -9,7 +9,7 @@ import router from "./backend/src/routes/index.js";
 import corsOptions from "./backend/src/utils/corsConfig.js";
 import { fileURLToPath } from "url";
 import path from "path";
-import swaggerDocs from "./src/middlewares/swaggerDocs.js";
+import swaggerDocs from "./backend/src/middlewares/swaggerDocs.js";
 
 dotenv.config();
 

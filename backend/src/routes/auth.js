@@ -1,11 +1,16 @@
 import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import { loginSchema, registerSchema } from '../validation/auth.js';
+import {
+  loginSchema,
+  registerSchema,
+  updateUserSchema,
+} from '../validation/auth.js';
 import {
   loginUserController,
   logoutUserController,
   refreshUserController,
   registerUserController,
+  updateUserController,
 } from '../controllers/auth.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { checkToken } from '../middlewares/checkToken.js';
@@ -25,4 +30,11 @@ authRouter.post(
 );
 authRouter.post('/logout', checkToken, ctrlWrapper(logoutUserController));
 authRouter.get('/current', checkToken, ctrlWrapper(refreshUserController));
+authRouter.patch(
+  '/current',
+  checkToken,
+  validateBody(updateUserSchema),
+  ctrlWrapper(updateUserController),
+);
+
 export default authRouter;

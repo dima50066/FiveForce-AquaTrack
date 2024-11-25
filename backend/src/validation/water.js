@@ -11,6 +11,9 @@ export const createWaterSchema = () => {
       .max(Date.now() + unixDay)
       .required(),
     amount: Joi.number().min(10).max(3000).required(),
+    owner: Joi.string()
+      .pattern(/^[0-9a-fA-F]{24}$/)
+      .required(),
   });
 };
 

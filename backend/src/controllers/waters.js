@@ -7,7 +7,6 @@ export const createWaterController = async (req, res) => {
     if (!date || !amount || !owner) {
       return res.status(400).json({ message: "Missing required fields" });
     }
-
     const newWater = await createWater(date, amount, owner);
     res.status(201).json(newWater);
   } catch (error) {

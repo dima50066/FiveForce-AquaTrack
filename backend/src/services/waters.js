@@ -7,6 +7,7 @@ export const createWater = async (date, amount, owner) => {
       amount,
       owner,
     });
+
     await newWaterRecord.save();
     return newWaterRecord;
   } catch (error) {

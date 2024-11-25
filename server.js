@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import pino from "pino-http";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./backend/src/middlewares/errorHandler.js";
@@ -27,7 +28,15 @@ export const setupServer = () => {
 
   app.use(cors(corsOptions));
 
+  app.use(
+    pino({
+      transport: {
+        target: "pino-pretty",
+      },
+    })
+  );
   app.use("/uploads", express.static(UPLOAD_DIR));
+
   app.use(router);
 
   app.use((req, res, next) => {

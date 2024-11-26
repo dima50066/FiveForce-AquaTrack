@@ -12,13 +12,12 @@
             "dest": "index.js"
         },
         {
+            "src": "/uploads/(.*)",
+            "dest": "index.js"
+        },
+        {
             "src": "/(.*)",
             "dest": "index.js"
         }
-    ],
-    "functions": {
-        "index.js": {
-            "includeFiles": "backend/docs/swagger.json"
-        }
-    }
+    ]
 }

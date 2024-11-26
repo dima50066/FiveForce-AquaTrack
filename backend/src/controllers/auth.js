@@ -6,6 +6,7 @@ import {
   updateUserWithToken,
 } from '../services/auth.js';
 import bcrypt from 'bcrypt';
+import { UsersCollection } from '../db/models/user.js';
 
 export const registerUserController = async (req, res) => {
   const { name, email } = req.body;
@@ -60,5 +61,38 @@ export const refreshUserController = (req, res) => {
     weight,
     activeTime,
     dailyNorm,
+  });
+};
+
+export const updateUserController = async (req, res) => {
+  const userId = req.user._id;
+  const updateData = req.body;
+
+  if (!Object.keys(updateData).length) {
+    throw createHttpError(400, 'No data available to update the user.');
+  }
+
+  const updatedUser = await UsersCollection.findByIdAndUpdate(
+    userId,
+    updateData,
+    {
+      new: true,
+    },
+  );
+
+  if (!updatedUser) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  res.status(200).json({
+    user: {
+      name: updatedUser.name,
+      email: updatedUser.email,
+      avatar: updatedUser.avatar,
+      gender: updatedUser.gender,
+      weight: updatedUser.weight,
+      activeTime: updatedUser.activeTime,
+      dailyNorm: updatedUser.dailyNorm,
+    },
   });
 };

@@ -13,7 +13,12 @@ import swaggerDocs from './backend/src/middlewares/swaggerDocs.js';
 
 dotenv.config();
 
-export const SWAGGER_PATH = path.join(process.cwd(), 'docs', 'swagger.json');
+export const SWAGGER_PATH = path.join(
+  process.cwd(),
+  'backend',
+  'docs',
+  'swagger.json',
+);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

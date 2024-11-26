@@ -1,0 +1,24 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "index.js",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/api-docs/(.*)",
+            "dest": "index.js"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "index.js"
+        }
+    ],
+    "functions": {
+        "index.js": {
+            "includeFiles": "backend/docs/swagger.json"
+        }
+    }
+}

@@ -14,20 +14,19 @@ tags:
     description: Auth operations.
 servers:
   - url: http://localhost:3000
-  - url: https://?????????????????????????????????????????/.onrender.com #Потрібно оновити посилання на рендер сайту!!!!!!!!!!!!!!!!
 paths:
   /water/{id}:
     get:
       $ref: ../swagger/paths/water/{id}/get.yaml
     patch:
-      $ref: "../swagger/paths/water/{id}/patch.yaml"
+      $ref: '../swagger/paths/water/{id}/patch.yaml'
     delete:
-      $ref: "../swagger/paths/water/{id}/delete.yaml"
+      $ref: '../swagger/paths/water/{id}/delete.yaml'
   /water:
     get:
-      $ref: "../swagger/paths/water/get.yaml"
+      $ref: '../swagger/paths/water/get.yaml'
     post:
-      $ref: "../swagger/paths/water/post.yaml"
+      $ref: '../swagger/paths/water/post.yaml'
 components:
   securitySchemes:
     bearerAuth:

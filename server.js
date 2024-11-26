@@ -37,13 +37,17 @@ export const setupServer = () => {
 
   app.use(cors(corsOptions));
 
-  app.use(
-    pino({
-      transport: {
-        target: 'pino-pretty',
-      },
-    }),
-  );
+  const loggerTransport =
+    process.env.NODE_ENV === 'production'
+      ? undefined
+      : {
+          transport: {
+            target: 'pino-pretty',
+          },
+        };
+
+  app.use(pino(loggerTransport));
+
   app.use('/uploads', express.static(UPLOAD_DIR));
 
   app.use(router);

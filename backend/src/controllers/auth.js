@@ -8,6 +8,7 @@ import {
 import bcrypt from 'bcrypt';
 import { UsersCollection } from '../db/models/user.js';
 
+
 export const registerUserController = async (req, res) => {
   const { name, email } = req.body;
   const user = await findUserByEmail(email);
@@ -65,6 +66,7 @@ export const refreshUserController = (req, res) => {
 };
 
 export const updateUserController = async (req, res) => {
+
   const userId = req.user._id;
   const updateData = req.body;
 

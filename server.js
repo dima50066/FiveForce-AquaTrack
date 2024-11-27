@@ -10,7 +10,7 @@ import corsOptions from './backend/src/utils/corsConfig.js';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import swaggerDocs from './backend/src/middlewares/swaggerDocs.js';
-
+import { initMongoConnection } from './backend/src/db/initMongoConnection.js';
 dotenv.config();
 
 export const SWAGGER_PATH = path.join(
@@ -30,6 +30,7 @@ console.log(`Running in ${process.env.NODE_ENV || 'development'} mode`);
 
 export const setupServer = () => {
   const app = express();
+  initMongoConnection();
 
   app.use(express.json());
 
@@ -66,3 +67,5 @@ export const setupServer = () => {
     console.log(`Server running on port ${PORT}`);
   });
 };
+
+setupServer();

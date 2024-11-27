@@ -63,20 +63,20 @@ export const updateUserSchema = Joi.object({
   }),
 });
 
-// export const requestResetPasswordSchema = Joi.object({
-//   email: Joi.string().email().required().messages({
-//     'string.base': 'Email must be a string',
-//     'any.required': 'Email is required',
-//   }),
-// });
+export const requestResetPasswordSchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    'string.base': 'Email must be a string',
+    'any.required': 'Email is required',
+  }),
+});
 
-// export const resetPasswordSchema = Joi.object({
-//   password: Joi.string().required().messages({
-//     'string.base': 'Password must be a string',
-//     'any.required': 'Password is required',
-//   }),
-//   token: Joi.string().required().messages({
-//     'string.base': 'Token must be a string',
-//     'any.required': 'Token is required',
-//   }),
-// });
+export const resetPasswordSchema = Joi.object({
+  password: Joi.string().required().messages({
+    'string.base': 'Password must be a string',
+    'any.required': 'Password is required',
+  }),
+  token: Joi.string().required().messages({
+    'string.base': 'Token must be a string',
+    'any.required': 'Token is required',
+  }),
+});

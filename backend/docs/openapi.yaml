@@ -13,7 +13,8 @@ tags:
   - name: Water
     description: Operations about water.
 servers:
-  - url: http://localhost:3000 # Потрібно оновити посилання на рендер або продакшн-сервер
+  - url: https://five-force-aqua-track.vercel.app
+  # - url: http://localhost:3000 # Потрібно оновити посилання на рендер або продакшн-сервер
 paths:
   /auth/register:
     post:

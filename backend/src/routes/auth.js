@@ -6,6 +6,7 @@ import {
   updateUserSchema,
 } from '../validation/auth.js';
 import {
+  countUsersController,
   loginUserController,
   logoutUserController,
   refreshUserController,
@@ -36,5 +37,6 @@ authRouter.patch(
   validateBody(updateUserSchema),
   ctrlWrapper(updateUserController),
 );
+authRouter.get('/count', ctrlWrapper(countUsersController));
 
 export default authRouter;

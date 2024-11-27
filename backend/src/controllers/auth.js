@@ -96,3 +96,8 @@ export const updateUserController = async (req, res) => {
     },
   });
 };
+
+export const countUsersController = async (req, res) => {
+  const countUsers = await UsersCollection.countDocuments();
+  res.status(200).json({ countUsers });
+};

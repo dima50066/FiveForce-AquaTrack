@@ -1,0 +1,58 @@
+.
+├── My notes.txt
+├── README.md
+├── backend
+│   ├── docs
+│   │   ├── index.html
+│   │   ├── openapi.yaml
+│   │   ├── swagger
+│   │   │   ├── components
+│   │   │   │   ├── responses
+│   │   │   │   └── schemas
+│   │   │   └── paths
+│   │   │       ├── auth
+│   │   │       └── water
+│   │   └── swagger.json
+│   └── src
+│       ├── constants
+│       │   ├── constants.js
+│       │   └── index.js
+│       ├── controllers
+│       │   ├── auth.js
+│       │   └── waters.js
+│       ├── db
+│       │   ├── initMongoConnection.js
+│       │   └── models
+│       │       ├── user.js
+│       │       └── water.js
+│       ├── middlewares
+│       │   ├── checkToken.js
+│       │   ├── dateMiddleware.js
+│       │   ├── errorHandler.js
+│       │   ├── isValidId.js
+│       │   ├── notFoundHandler.js
+│       │   ├── swaggerDocs.js
+│       │   └── validateBody.js
+│       ├── routes
+│       │   ├── auth.js
+│       │   ├── index.js
+│       │   └── water.js
+│       ├── services
+│       │   ├── auth.js
+│       │   └── water.js
+│       ├── utils
+│       │   ├── corsConfig.js
+│       │   ├── ctrlWrapper.js
+│       │   └── env.js
+│       └── validation
+│           ├── auth.js
+│           └── water.js
+├── eslint.config.js
+├── index.js
+├── package-lock.json
+├── package.json
+├── redocly.yaml
+├── server.js
+├── structure.txt
+└── vercel.json
+

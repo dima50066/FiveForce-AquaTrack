@@ -1,34 +1,53 @@
 openapi: 3.1.0
 info:
   version: 1.0.0
-  title: My water App
+  title: My Water App
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   description: >
-    This is a document of my water app.
+    This is a document of my water app, which tracks daily water consumption and user activities.
 tags:
-  - name: Water
-    description: Operations about water.
   - name: Auth
     description: Auth operations.
+  - name: Water
+    description: Operations about water.
 servers:
-  - url: http://localhost:3000
+  - url: http://localhost:3000 # Потрібно оновити посилання на рендер або продакшн-сервер
 paths:
+  /auth/register:
+    post:
+      $ref: './swagger/paths/auth/register.yaml'
+  /auth/login:
+    post:
+      $ref: './swagger/paths/auth/login.yaml'
+  /auth/logout:
+    post:
+      $ref: './swagger/paths/auth/logout.yaml'
+  /auth/current:
+    get:
+      $ref: './swagger/paths/auth/current/get.yaml'
+    patch:
+      $ref: './swagger/paths/auth/current/patch.yaml'
   /water/{id}:
     get:
-      $ref: ../swagger/paths/water/{id}/get.yaml
+      $ref: './swagger/paths/water/{id}/get.yaml'
     patch:
-      $ref: '../swagger/paths/water/{id}/patch.yaml'
+      $ref: './swagger/paths/water/{id}/patch.yaml'
     delete:
-      $ref: '../swagger/paths/water/{id}/delete.yaml'
+      $ref: './swagger/paths/water/{id}/delete.yaml'
   /water:
     get:
-      $ref: '../swagger/paths/water/get.yaml'
+      $ref: './swagger/paths/water/get.yaml'
     post:
-      $ref: '../swagger/paths/water/post.yaml'
+      $ref: './swagger/paths/water/post.yaml'
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
+  # schemas:
+  # User:
+  #   $ref: './swagger/components/schemas/userSchema.yaml'
+  # Water:
+  #   $ref: './swagger/components/schemas/waterSchema.yaml'

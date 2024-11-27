@@ -26,7 +26,7 @@ paths:
     get:
       $ref: '../swagger/paths/water/get.yaml'
     post:
-      $ref: '../swagger/paths/water/post.yaml'
+      $ref: '../docs/swagger/paths/water/post.yaml'
 components:
   securitySchemes:
     bearerAuth:

@@ -2,14 +2,13 @@ import bcrypt from 'bcrypt';
 import { UsersCollection } from '../db/models/user.js';
 import jwt from 'jsonwebtoken';
 import createHttpError from 'http-errors';
-import { SMTP } from '../constants/constants.js';
+import { SMTP } from '../constants/index.js';
 import { env } from '../utils/env.js';
 import { sendEmail } from '../utils/sendMail.js';
 import handlebars from 'handlebars';
 import path from 'node:path';
 import fs from 'node:fs/promises';
-import { TEMPLATES_DIR } from "../constants/index.js";
-
+import { TEMPLATES_DIR } from '../constants/index.js';
 
 export const findUserByEmail = (email) => UsersCollection.findOne({ email });
 export const updateUserWithToken = async (userId) => {

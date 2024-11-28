@@ -8,7 +8,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "build": "npm run build-docs",
-    "build-docs": "redocly bundle --ext json -o docs/swagger.json",
+    "build-docs": "redocly bundle --ext json -o ./backend/docs/swagger.json",
     "preview-docs": "redocly preview-docs"
   },
   "type": "module",

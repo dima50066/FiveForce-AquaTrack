@@ -1,19 +1,25 @@
-description: Creates a contact
+description: User registered successfully
 content:
   application/json:
     schema:
       type: object
-      required:
-        - status
-        - message
-        - data
       properties:
         status:
           type: integer
           example: 201
         message:
           type: string
-          example: Successfully created a contact!
+          example: User registered successfully
         data:
           type: object
-          $ref: "../../components/schemas/contact.yaml"
+          properties:
+            id:
+              type: string
+              example: '67890'
+            name:
+              type: string
+              example: 'New Resource'
+            createdAt:
+              type: string
+              format: date-time
+              example: '2024-11-27T12:00:00Z'

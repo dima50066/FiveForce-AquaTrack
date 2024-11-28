@@ -15,6 +15,7 @@ import {
 } from '../controllers/auth.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { checkToken } from '../middlewares/checkToken.js';
+import { upload } from '../middlewares/upload.js';
 import { requestResetPasswordSchema } from '../validation/auth.js';
 import { requestResetEmailController } from '../controllers/auth.js';
 import { resetPasswordSchema } from '../validation/auth.js';
@@ -34,7 +35,7 @@ authRouter.post(
   ctrlWrapper(loginUserController),
 );
 authRouter.post(
-  '/reset-email',  
+  '/reset-email',
   validateBody(requestResetPasswordSchema),
   ctrlWrapper(requestResetEmailController),
 );
@@ -48,6 +49,7 @@ authRouter.get('/current', checkToken, ctrlWrapper(refreshUserController));
 authRouter.patch(
   '/current',
   checkToken,
+  upload.single('avatar'),
   validateBody(updateUserSchema),
   ctrlWrapper(updateUserController),
 );

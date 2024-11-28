@@ -23,8 +23,13 @@ export const TEMPLATES_DIR = path.join(
   'src',
   'templates',
 );
-export const TEMP_UPLOAD_DIR = path.join(process.cwd(), 'temp');
-export const UPLOAD_DIR = path.join(process.cwd(), 'uploads');
+export const TEMP_UPLOAD_DIR = path.join(
+  process.cwd(),
+  'backend',
+  'src',
+  'temp',
+);
+export const UPLOAD_DIR = path.join(process.cwd(), 'backend', 'src', 'uploads');
 
 export const SWAGGER_PATH = path.join(
   process.cwd(),

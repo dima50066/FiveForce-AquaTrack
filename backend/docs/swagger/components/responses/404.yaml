@@ -1,4 +1,4 @@
-description: "Contact not found"
+description: 'Route not found'
 content:
   application/json:
     schema:
@@ -12,4 +12,4 @@ content:
           example: 404
         message:
           type: string
-          example: "Contact not found"
+          example: 'Route not found'

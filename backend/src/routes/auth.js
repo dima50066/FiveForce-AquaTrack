@@ -15,6 +15,10 @@ import {
 } from '../controllers/auth.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { checkToken } from '../middlewares/checkToken.js';
+import { requestResetPasswordSchema } from '../validation/auth.js';
+import { requestResetEmailController } from '../controllers/auth.js';
+import { resetPasswordSchema } from '../validation/auth.js';
+import { resetPasswordController } from '../controllers/auth.js';
 
 const authRouter = Router();
 
@@ -28,6 +32,16 @@ authRouter.post(
   '/login',
   validateBody(loginSchema),
   ctrlWrapper(loginUserController),
+);
+authRouter.post(
+  '/reset-email',  
+  validateBody(requestResetPasswordSchema),
+  ctrlWrapper(requestResetEmailController),
+);
+authRouter.post(
+  '/reset-password',
+  validateBody(resetPasswordSchema),
+  ctrlWrapper(resetPasswordController),
 );
 authRouter.post('/logout', checkToken, ctrlWrapper(logoutUserController));
 authRouter.get('/current', checkToken, ctrlWrapper(refreshUserController));

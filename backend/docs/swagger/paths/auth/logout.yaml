@@ -1,0 +1,12 @@
+summary: User logout
+description: Log the user out by invalidating their JWT token.
+operationId: logoutUser
+tags:
+  - Auth
+responses:
+  '200':
+    $ref: '../../components/responses/200.yaml'
+  '401':
+    $ref: '../../components/responses/401.yaml'
+security:
+  - bearerAuth: []

@@ -1,0 +1,20 @@
+type: object
+properties:
+  name:
+    type: string
+  email:
+    type: string
+  avatar:
+    type: string
+  gender:
+    type: string
+    enum: ['Woman', 'Man']
+  weight:
+    type: number
+  activeTime:
+    type: number
+  dailyNorm:
+    type: number
+required:
+  - name
+  - email

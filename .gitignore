@@ -131,7 +131,7 @@ dist
 
 # Local project-specific files
 file_list.txt
-
+structure.txt
 
 //.gitignore
 
@@ -143,3 +143,4 @@ file_list.txt
 .DS_Store
 .idea
 .vercel
+

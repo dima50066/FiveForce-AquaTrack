@@ -1,0 +1,43 @@
+summary: Update current user details
+description: Update the details of the currently authenticated user.
+operationId: updateCurrentUser
+tags:
+  - Auth
+security:
+  - bearerAuth: []
+requestBody:
+  description: User details to be updated.
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+            example: 'John Doe Updated'
+          email:
+            type: string
+            example: 'john.doe.updated@example.com'
+          gender:
+            type: string
+            enum: [Woman, Man]
+            example: 'Woman'
+          weight:
+            type: number
+            example: 75
+          activeTime:
+            type: number
+            example: 50
+          dailyNorm:
+            type: number
+            example: 2700
+        required:
+          - name
+          - email
+responses:
+  '200':
+    $ref: '../../../components/responses/200.yaml'
+  '400':
+    $ref: '../../../components/responses/400.yaml'
+  '401':
+    $ref: '../../../components/responses/401.yaml'

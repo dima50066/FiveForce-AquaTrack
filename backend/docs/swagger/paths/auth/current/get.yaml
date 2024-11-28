@@ -1,0 +1,39 @@
+summary: Get current user
+description: Retrieve the details of the currently authenticated user.
+operationId: getCurrentUser
+tags:
+  - Auth
+security:
+  - bearerAuth: []
+responses:
+  '200':
+    description: Successfully retrieved user details
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: string
+              example: '12345'
+            name:
+              type: string
+              example: 'John Doe'
+            email:
+              type: string
+              example: 'john.doe@example.com'
+            gender:
+              type: string
+              enum: [Woman, Man]
+              example: 'Woman'
+            weight:
+              type: number
+              example: 70
+            activeTime:
+              type: number
+              example: 45
+            dailyNorm:
+              type: number
+              example: 2500
+  '401':
+    $ref: '../../../components/responses/401.yaml'

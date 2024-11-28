@@ -1,0 +1,28 @@
+summary: User login
+description: Login with credentials to receive a JWT token.
+operationId: loginUser
+tags:
+  - Auth
+requestBody:
+  description: User login credentials.
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          email:
+            type: string
+            example: john.doe@example.com
+          password:
+            type: string
+            example: securePassword123
+        required:
+          - email
+          - password
+responses:
+  '200':
+    $ref: '../../components/responses/200.yaml'
+  '400':
+    $ref: '../../components/responses/400.yaml'
+security:
+  - bearerAuth: []

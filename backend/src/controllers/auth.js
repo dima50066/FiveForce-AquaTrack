@@ -7,6 +7,8 @@ import {
 } from '../services/auth.js';
 import bcrypt from 'bcrypt';
 import { UsersCollection } from '../db/models/user.js';
+import { requestResetToken } from '../services/auth.js';
+import { resetPassword } from '../services/auth.js';
 
 
 export const registerUserController = async (req, res) => {
@@ -96,5 +98,28 @@ export const updateUserController = async (req, res) => {
       activeTime: updatedUser.activeTime,
       dailyNorm: updatedUser.dailyNorm,
     },
+  });
+};
+
+export const countUsersController = async (req, res) => {
+  const countUsers = await UsersCollection.countDocuments();
+  res.status(200).json({ countUsers });
+};
+
+export const requestResetEmailController = async (req, res) => {
+  await requestResetToken(req.body.email);
+  res.json({
+    message: 'Reset password email was successfully sent!',
+    status: 200,
+    data: {},
+  });
+};
+
+export const resetPasswordController = async (req, res) => {
+  await resetPassword(req.body);
+  res.json({
+    message: 'Password was successfully reset!',
+    status: 200,
+    data: {},
   });
 };

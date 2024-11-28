@@ -10,7 +10,6 @@ import { UsersCollection } from '../db/models/user.js';
 import { requestResetToken } from '../services/auth.js';
 import { resetPassword } from '../services/auth.js';
 
-
 export const registerUserController = async (req, res) => {
   const { name, email } = req.body;
   const user = await findUserByEmail(email);
@@ -98,6 +97,11 @@ export const updateUserController = async (req, res) => {
       dailyNorm: updatedUser.dailyNorm,
     },
   });
+};
+
+export const countUsersController = async (req, res) => {
+  const countUsers = await UsersCollection.countDocuments();
+  res.status(200).json({ countUsers });
 };
 
 export const requestResetEmailController = async (req, res) => {

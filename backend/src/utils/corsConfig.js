@@ -1,7 +1,6 @@
 const allowedOrigins = [
-  'http://localhost:3000',
   'https://fiveforce.vercel.app',
-  'https://localhost:5000',
+  'http://localhost:5000',
 ];
 
 const corsOptions = {

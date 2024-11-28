@@ -19,19 +19,6 @@ requestBody:
           password:
             type: string
             example: securePassword123
-          gender:
-            type: string
-            enum: [Woman, Man]
-            example: Woman
-          weight:
-            type: number
-            example: 70
-          activeTime:
-            type: number
-            example: 45
-          dailyNorm:
-            type: number
-            example: 2500
         required:
           - name
           - email

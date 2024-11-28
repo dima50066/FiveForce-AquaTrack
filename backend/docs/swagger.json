@@ -11,7 +11,10 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "https://five-force-aqua-track.vercel.app"
+    },
+    {
+      "url": "http://localhost:5000"
     }
   ],
   "tags": [
@@ -25,7 +28,7 @@
     }
   ],
   "paths": {
-    "/auth/register": {
+    "/users/register": {
       "post": {
         "summary": "User registration",
         "description": "Register a new user in the system.",
@@ -100,7 +103,7 @@
         ]
       }
     },
-    "/auth/login": {
+    "/users/login": {
       "post": {
         "summary": "User login",
         "description": "Login with credentials to receive a JWT token.",
@@ -147,7 +150,7 @@
         ]
       }
     },
-    "/auth/logout": {
+    "/users/logout": {
       "post": {
         "summary": "User logout",
         "description": "Log the user out by invalidating their JWT token.",

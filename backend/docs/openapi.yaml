@@ -14,15 +14,15 @@ tags:
     description: Operations about water.
 servers:
   - url: https://five-force-aqua-track.vercel.app
-  # - url: http://localhost:3000 # Потрібно оновити посилання на рендер або продакшн-сервер
+  - url: http://localhost:5000
 paths:
-  /auth/register:
+  /users/register:
     post:
       $ref: './swagger/paths/auth/register.yaml'
-  /auth/login:
+  /users/login:
     post:
       $ref: './swagger/paths/auth/login.yaml'
-  /auth/logout:
+  /users/logout:
     post:
       $ref: './swagger/paths/auth/logout.yaml'
   /auth/current:

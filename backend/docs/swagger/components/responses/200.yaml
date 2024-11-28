@@ -1,4 +1,4 @@
-description: Internal server error
+description: Successfully processed the request
 content:
   application/json:
     schema:
@@ -6,19 +6,16 @@ content:
       required:
         - status
         - message
-        - data
       properties:
         status:
           type: integer
-          example: 500
+          example: 200
         message:
           type: string
-          example: Something went wrong
+          example: Request successfully processed
         data:
           type: object
-          required:
-            - message
           properties:
-            message:
+            result:
               type: string
-              example: Something went wrong
+              example: 'Operation completed successfully'

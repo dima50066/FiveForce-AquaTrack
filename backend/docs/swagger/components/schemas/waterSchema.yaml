@@ -1,0 +1,14 @@
+type: object
+properties:
+  date:
+    type: integer
+    format: date
+  amount:
+    type: number
+  owner:
+    type: string
+    format: uuid
+required:
+  - date
+  - amount
+  - owner

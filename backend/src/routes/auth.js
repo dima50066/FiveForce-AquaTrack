@@ -4,6 +4,9 @@ import {
   loginSchema,
   registerSchema,
   updateUserSchema,
+  requestResetPasswordSchema,
+  resetPasswordSchema,
+  loginWithGoogleOAuthSchema,
 } from '../validation/auth.js';
 import {
   countUsersController,
@@ -12,13 +15,14 @@ import {
   refreshUserController,
   registerUserController,
   updateUserController,
+  requestResetEmailController,
+  resetPasswordController,
+  getGoogleOAuthUrlController,
+  loginWithGoogleController,
 } from '../controllers/auth.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { checkToken } from '../middlewares/checkToken.js';
-import { requestResetPasswordSchema } from '../validation/auth.js';
-import { requestResetEmailController } from '../controllers/auth.js';
-import { resetPasswordSchema } from '../validation/auth.js';
-import { resetPasswordController } from '../controllers/auth.js';
+
 
 const authRouter = Router();
 
@@ -33,16 +37,27 @@ authRouter.post(
   validateBody(loginSchema),
   ctrlWrapper(loginUserController),
 );
+
+authRouter.get('/get-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
+
+authRouter.post(
+  '/confirm-oauth',
+  validateBody(loginWithGoogleOAuthSchema),
+  ctrlWrapper(loginWithGoogleController),
+);
+
 authRouter.post(
   '/reset-email',  
   validateBody(requestResetPasswordSchema),
   ctrlWrapper(requestResetEmailController),
 );
+
 authRouter.post(
   '/reset-password',
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
 );
+
 authRouter.post('/logout', checkToken, ctrlWrapper(logoutUserController));
 authRouter.get('/current', checkToken, ctrlWrapper(refreshUserController));
 authRouter.patch(

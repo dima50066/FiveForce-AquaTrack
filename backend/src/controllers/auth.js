@@ -13,7 +13,7 @@ import {
 import bcrypt from 'bcrypt';
 import { UsersCollection } from '../db/models/user.js';
 import { generateAuthUrl } from '../utils/googleOAuth2.js';
-import { THIRTY_DAYS, FIFTEEN_MINUTES } from '../constants/constants.js';
+import { THIRTY_DAYS, FIFTEEN_MINUTES } from '../constants/index.js';
 import { updateUserSchema } from '../validation/auth.js';
 import { env } from '../utils/env.js';
 import { uploadToCloudinary } from '../utils/uploadToCloudinary.js';

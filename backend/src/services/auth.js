@@ -2,21 +2,21 @@ import bcrypt from 'bcrypt';
 import { UsersCollection } from '../db/models/user.js';
 import jwt from 'jsonwebtoken';
 import createHttpError from 'http-errors';
-<<<<<<< Updated upstream
-import { SMTP } from '../constants/index.js';
-=======
-import { SMTP, THIRTY_DAYS, FIFTEEN_MINUTES } from '../constants/constants.js';
->>>>>>> Stashed changes
+import {
+  SMTP,
+  THIRTY_DAYS,
+  FIFTEEN_MINUTES,
+  TEMPLATES_DIR,
+} from '../constants/index.js';
 import { env } from '../utils/env.js';
 import { sendEmail } from '../utils/sendMail.js';
 import handlebars from 'handlebars';
 import path from 'node:path';
 import fs from 'node:fs/promises';
-<<<<<<< Updated upstream
-import { TEMPLATES_DIR } from '../constants/index.js';
-=======
-import { TEMPLATES_DIR } from "../constants/index.js";
-import { getFullNameFromGoogleTokenPayload, validateCode } from '../utils/googleOAuth2.js';
+import {
+  getFullNameFromGoogleTokenPayload,
+  validateCode,
+} from '../utils/googleOAuth2.js';
 import { randomBytes } from 'crypto';
 import { SessionsCollection } from '../db/models/session.js';
 
@@ -30,7 +30,6 @@ const createSession = () => {
     refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAYS),
   };
 };
->>>>>>> Stashed changes
 
 export const findUserByEmail = (email) => UsersCollection.findOne({ email });
 export const updateUserWithToken = async (userId) => {
@@ -125,8 +124,6 @@ export const resetPassword = async (payload) => {
     { password: encryptedPassword },
   );
 };
-<<<<<<< Updated upstream
-=======
 
 export const loginOrSignupWithGoogle = async (code) => {
   const loginTicket = await validateCode(code);
@@ -151,4 +148,3 @@ export const loginOrSignupWithGoogle = async (code) => {
     ...newSession,
   });
 };
->>>>>>> Stashed changes

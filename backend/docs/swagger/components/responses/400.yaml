@@ -1,4 +1,4 @@
-description: Internal server error
+description: Bad request due to invalid data
 content:
   application/json:
     schema:
@@ -10,15 +10,15 @@ content:
       properties:
         status:
           type: integer
-          example: 500
+          example: 400
         message:
           type: string
-          example: Something went wrong
+          example: Invalid date format
         data:
           type: object
           required:
-            - message
+            - error
           properties:
-            message:
+            error:
               type: string
-              example: Something went wrong
+              example: Invalid date format

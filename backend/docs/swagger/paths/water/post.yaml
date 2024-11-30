@@ -1,69 +1,28 @@
+summary: Create a new water consumption record
+description: Add a new water consumption record for the authenticated user.
+operationId: createWaterRecord
 tags:
-  - Contacts
-summary: Create contact
-operationId: createContact
-description: "Create a contact with payload"
+  - Water
 security:
   - bearerAuth: []
 requestBody:
+  description: Water consumption details to be created.
   content:
-    multipart/form-data:
+    application/json:
       schema:
-        type: object
-        required:
-          - name
-          - phoneNumber
-          - contactType
-        properties:
-          name:
-            description: "Contact's name"
-            type: string
-            minLength: 3
-            maxLength: 20
-            example: Roma Rodamko
-          phoneNumber:
-            type: string
-            description: Contact phone number
-            example: +380123456789
-          email:
-            type: string
-            description: Contact email
-            example: Roma@gmail.com
-          isFavourite:
-            type: boolean
-            description: Whether the contact if favourite
-            default: false
-          contactType:
-            type: string
-            description: Type of contact
-            enum: ["work", "home", "personal"]
-            example: personal
-          photo:
-            type: string
-            format: binary
-            description: Сontact's photo
+        $ref: '../../components/schemas/waterSchema.yaml'
 responses:
-  "201":
-    description: Creates a contact
+  '201':
+    description: Successfully created water consumption record
     content:
       application/json:
         schema:
           type: object
-          required:
-            - status
-            - message
-            - data
           properties:
-            status:
-              type: integer
-              example: 201
             message:
               type: string
-              example: Successfully created a contact
-            data:
-              type: object
-              $ref: ../../components/schemas/water.yaml
-  "401":
-    $ref: ../../components/responses/401.yaml
-  "500":
-    $ref: ../../components/responses/500.yaml
+              example: 'Water consumption record created successfully'
+  '400':
+    $ref: '../../components/responses/400.yaml'
+  '401':
+    $ref: '../../components/responses/401.yaml'

@@ -1,4 +1,6 @@
 import createHttpError from 'http-errors';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import {
   createUser,
   findUserByEmail,
@@ -6,15 +8,16 @@ import {
   updateUserWithToken,
   requestResetToken,
   resetPassword,
-  loginOrSignupWithGoogle
+  loginOrSignupWithGoogle,
 } from '../services/auth.js';
 import bcrypt from 'bcrypt';
 import { UsersCollection } from '../db/models/user.js';
 import { generateAuthUrl } from '../utils/googleOAuth2.js';
 import { THIRTY_DAYS, FIFTEEN_MINUTES } from '../constants/constants.js';
+import { updateUserSchema } from '../validation/auth.js';
+import { env } from '../utils/env.js';
+import { uploadToCloudinary } from '../utils/uploadToCloudinary.js';
 
-<<<<<<< Updated upstream
-=======
 const setupSession = async (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
@@ -27,7 +30,6 @@ const setupSession = async (res, session) => {
   });
 };
 
->>>>>>> Stashed changes
 export const registerUserController = async (req, res) => {
   const { name, email } = req.body;
   const user = await findUserByEmail(email);
@@ -86,15 +88,34 @@ export const refreshUserController = (req, res) => {
 
 export const updateUserController = async (req, res) => {
   const userId = req.user._id;
-  const updateData = req.body;
+  const { error } = updateUserSchema.validate(req.body);
+  if (error) {
+    throw createHttpError(400, error.message);
+  }
+  let userData = { ...req.body };
+  if (req.file) {
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      const result = await uploadToCloudinary(req.file.path);
+      await fs.unlink(req.file.path);
+      userData.avatar = result.secure_url;
+    } else {
+      await fs.rename(
+        req.file.path,
+        path.resolve('src', 'public/avatar', req.file.filename),
+      );
+      userData.avatar = `${env('APP_DOMAIN')}/public/avatar/${
+        req.file.filename
+      }`;
+    }
+  }
 
-  if (!Object.keys(updateData).length) {
+  if (!Object.keys(userData).length) {
     throw createHttpError(400, 'No data available to update the user.');
   }
 
   const updatedUser = await UsersCollection.findByIdAndUpdate(
     userId,
-    updateData,
+    userData,
     {
       new: true,
     },
@@ -139,8 +160,6 @@ export const resetPasswordController = async (req, res) => {
     data: {},
   });
 };
-<<<<<<< Updated upstream
-=======
 
 export const getGoogleOAuthUrlController = async (req, res) => {
   const url = generateAuthUrl();
@@ -165,4 +184,3 @@ export const loginWithGoogleController = async (req, res) => {
     },
   });
 };
->>>>>>> Stashed changes

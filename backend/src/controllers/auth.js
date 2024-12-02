@@ -16,7 +16,7 @@ import { requestResetToken } from '../services/auth.js';
 import { resetPassword } from '../services/auth.js';
 
 export const registerUserController = async (req, res) => {
-  const { name, email } = req.body;
+  const { email } = req.body;
   const user = await findUserByEmail(email);
   if (user) {
     throw createHttpError(409, 'User with this email is already exist!');
@@ -25,7 +25,6 @@ export const registerUserController = async (req, res) => {
   res.status(201).json({
     token: newUser.token,
     user: {
-      name,
       email,
     },
   });
@@ -47,6 +46,11 @@ export const loginUserController = async (req, res) => {
     user: {
       name: updatedUser.name,
       email: updatedUser.email,
+      avatar: updatedUser.avatar,
+      gender: updatedUser.gender,
+      weight: updatedUser.weight,
+      activeTime: updatedUser.activeTime,
+      dailyNorm: updatedUser.dailyNorm,
     },
   });
 };

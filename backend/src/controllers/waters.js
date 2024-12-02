@@ -1,4 +1,12 @@
-import { createWater, deleteWater, updateWater } from '../services/water.js';
+import {
+  createWater,
+  deleteWater,
+  updateWater,
+  getDayWater,
+  getMonthWater,
+  getSummaryAmount,
+} from '../services/water.js';
+import createHttpError from 'http-errors';
 
 export const createWaterController = async (req, res) => {
   try {
@@ -43,5 +51,71 @@ export const deleteWaterController = async (req, res) => {
       message: 'Error while deleting water record',
       error: error.message,
     });
+  }
+};
+
+export const getDayWaterController = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { date } = req.query;
+    const { timezone = 'UTC' } = req.query;
+
+    if (!date) {
+      throw createHttpError(400, 'Date parameter is required');
+    }
+
+    const { curDaylyNorm, totalAmount } = await getDayWater(
+      userId,
+      date,
+      timezone,
+    );
+
+    // if (!curDaylyNorm.length) {
+    //   return res
+    //     .status(404)
+    //     .json({ message: 'No water consumption records found for this day.' });
+    // }
+
+    res
+      .status(200)
+      .json({ date: new Date(Number(date)), totalAmount, curDaylyNorm });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMonthWaterController = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { date } = req.query;
+    const { timezone = 'UTC' } = req.query;
+
+    if (!date) {
+      throw createHttpError(400, 'Date parameter is required');
+    }
+
+    const monthData = await getMonthWater(userId, date, timezone);
+
+    res.status(200).json(monthData);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSummaryAmountController = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { date, dailyNorm } = req.query;
+    const { timezone = 'UTC' } = req.query;
+
+    if (!date || !dailyNorm) {
+      throw createHttpError(400, 'Date and dailyNorm parameters are required');
+    }
+
+    const summary = await getSummaryAmount(userId, date, dailyNorm, timezone);
+
+    res.status(200).json(summary);
+  } catch (error) {
+    next(error);
   }
 };

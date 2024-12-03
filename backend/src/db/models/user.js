@@ -2,9 +2,6 @@ import { Schema, model } from 'mongoose';
 
 const userSchema = new Schema(
   {
-    token: {
-      type: String,
-    },
     name: {
       type: String,
     },

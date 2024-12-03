@@ -19,11 +19,11 @@ import {
   resetPasswordController,
   getGoogleOAuthUrlController,
   loginWithGoogleController,
+  refreshSessionController,
 } from '../controllers/auth.js';
 import { validateBody } from '../middlewares/validateBody.js';
-import { checkToken } from '../middlewares/checkToken.js';
-
 import { upload } from '../middlewares/upload.js';
+import { auth } from '../middlewares/authenticate.js';
 
 const authRouter = Router();
 
@@ -46,25 +46,28 @@ authRouter.post(
   validateBody(loginWithGoogleOAuthSchema),
   ctrlWrapper(loginWithGoogleController),
 );
+authRouter.post('/refresh', auth, ctrlWrapper(refreshSessionController));
 
 authRouter.post(
   '/reset-email',
+  auth,
   validateBody(requestResetPasswordSchema),
   ctrlWrapper(requestResetEmailController),
 );
 
 authRouter.post(
   '/reset-password',
+  auth,
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
 );
 
-authRouter.post('/logout', checkToken, ctrlWrapper(logoutUserController));
-authRouter.get('/current', checkToken, ctrlWrapper(refreshUserController));
+authRouter.post('/logout', auth, ctrlWrapper(logoutUserController));
+authRouter.get('/current', auth, ctrlWrapper(refreshUserController));
 authRouter.patch(
   '/current',
-  checkToken,
   upload.single('avatar'),
+  auth,
   validateBody(updateUserSchema),
   ctrlWrapper(updateUserController),
 );

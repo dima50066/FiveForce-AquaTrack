@@ -2,12 +2,7 @@ import bcrypt from 'bcrypt';
 import { UsersCollection } from '../db/models/user.js';
 import jwt from 'jsonwebtoken';
 import createHttpError from 'http-errors';
-import {
-  SMTP,
-  THIRTY_DAYS,
-  FIFTEEN_MINUTES,
-  TEMPLATES_DIR,
-} from '../constants/index.js';
+import { SMTP, TEMPLATES_DIR } from '../constants/index.js';
 import { env } from '../utils/env.js';
 import { sendEmail } from '../utils/sendMail.js';
 import handlebars from 'handlebars';
@@ -19,44 +14,54 @@ import {
 } from '../utils/googleOAuth2.js';
 import { randomBytes } from 'crypto';
 import { SessionsCollection } from '../db/models/session.js';
-
-const createSession = () => {
-  const accessToken = randomBytes(30).toString('base64');
-  const refreshToken = randomBytes(30).toString('base64');
-  return {
-    accessToken,
-    refreshToken,
-    accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
-    refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAYS),
-  };
-};
+import { createSession } from '../utils/createSession.js';
 
 export const findUserByEmail = (email) => UsersCollection.findOne({ email });
-export const updateUserWithToken = async (userId) => {
-  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: '1h',
-  });
 
-  const user = await UsersCollection.findByIdAndUpdate(
-    userId,
-    { token },
-    { new: true },
-  );
-  return user;
-};
 export const createUser = async (userData) => {
   const encryptedPassword = await bcrypt.hash(userData.password, 10);
-  const user = await UsersCollection.create({
+  return UsersCollection.create({
     ...userData,
     password: encryptedPassword,
   });
-  return updateUserWithToken(user._id);
 };
+export const createActiveSession = async (userId) => {
+  await SessionsCollection.deleteOne({ userId });
+  const session = createSession();
+  return SessionsCollection.create({ ...session, userId });
+};
+
+export const findSessionByToken = (token) =>
+  SessionsCollection.findOne({ accessToken: token });
 
 export const findUserById = (userId) => UsersCollection.findById(userId);
 
-export const logoutUser = async (id) => {
-  await UsersCollection.findByIdAndUpdate(id, { token: '' });
+export const logoutUser = (sessionId, refreshToken) =>
+  SessionsCollection.findOneAndDelete({ _id: sessionId, refreshToken });
+export const refreshSession = async (sessionId, refreshToken) => {
+  const session = await SessionsCollection.findOne({
+    _id: sessionId,
+    refreshToken,
+  });
+
+  if (!session) {
+    throw createHttpError(401, 'Session not found');
+  }
+  const isExpiredToken = new Date() > session.refreshTokenValidUntil;
+  if (isExpiredToken) {
+    throw createHttpError(401, 'Token is expired!');
+  }
+
+  const user = await findUserById(session.userId);
+  if (!user) {
+    throw createHttpError(401, 'User not found.');
+  }
+  await SessionsCollection.findOneAndDelete({ _id: sessionId });
+  const newSession = createSession();
+  return await SessionsCollection.create({
+    userId: user._id,
+    ...newSession,
+  });
 };
 
 export const requestResetToken = async (email) => {

@@ -1,27 +1,29 @@
-import { Router } from "express";
+import { Router } from 'express';
 import {
   createWaterController,
   updateWaterController,
   deleteWaterController,
-} from "../controllers/waters.js";
-import { ctrlWrapper } from "../utils/ctrlWrapper.js";
-import { validateBody } from "../middlewares/validateBody.js";
-import { isValidId } from "../middlewares/isValidId.js";
-import { createWaterSchema, updateWaterSchema } from "../validation/water.js";
+} from '../controllers/waters.js';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+import { validateBody } from '../middlewares/validateBody.js';
+import { isValidId } from '../middlewares/isValidId.js';
+import { createWaterSchema, updateWaterSchema } from '../validation/water.js';
+import { auth } from '../middlewares/authenticate.js';
 
 const router = Router();
+router.use(auth);
 
 router.post(
-  "/",
+  '/',
   validateBody(createWaterSchema()),
-  ctrlWrapper(createWaterController)
+  ctrlWrapper(createWaterController),
 );
 router.put(
-  "/:waterId",
+  '/:waterId',
   isValidId,
   validateBody(updateWaterSchema()),
-  ctrlWrapper(updateWaterController)
+  ctrlWrapper(updateWaterController),
 );
-router.delete("/:waterId", isValidId, ctrlWrapper(deleteWaterController));
+router.delete('/:waterId', isValidId, ctrlWrapper(deleteWaterController));
 
 export default router;

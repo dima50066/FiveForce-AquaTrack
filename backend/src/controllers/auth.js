@@ -59,7 +59,7 @@ export const refreshSessionController = async (req, res) => {
     status: 200,
     message: 'Successfully refreshed a session!',
     data: {
-      accessToken: session.accessToken,
+      token: session.accessToken,
     },
   });
 };

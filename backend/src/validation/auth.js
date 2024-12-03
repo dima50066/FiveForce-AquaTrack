@@ -43,9 +43,9 @@ export const updateUserSchema = Joi.object({
     'string.base': 'Avatar url must be a string',
     'string.min': 'Avatar url length must be at least 3 characters long',
   }),
-  gender: Joi.string().valid('Woman', 'Man').messages({
+  gender: Joi.string().valid('woman', 'man').messages({
     'string.base': 'Gender must be a string',
-    'any.only': 'Gender must be one of [Woman, Man]',
+    'any.only': 'Gender must be one of [woman, man]',
   }),
   weight: Joi.number().min(0).max(500).messages({
     'number.base': 'Weight must be a number',
@@ -79,4 +79,8 @@ export const resetPasswordSchema = Joi.object({
     'string.base': 'Token must be a string',
     'any.required': 'Token is required',
   }),
+});
+
+export const loginWithGoogleOAuthSchema = Joi.object({
+  code: Joi.string().required(),
 });

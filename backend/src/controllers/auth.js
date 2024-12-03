@@ -6,17 +6,32 @@ import {
   findUserByEmail,
   logoutUser,
   updateUserWithToken,
+  requestResetToken,
+  resetPassword,
+  loginOrSignupWithGoogle,
 } from '../services/auth.js';
 import bcrypt from 'bcrypt';
 import { UsersCollection } from '../db/models/user.js';
+import { generateAuthUrl } from '../utils/googleOAuth2.js';
+import { THIRTY_DAYS, FIFTEEN_MINUTES } from '../constants/index.js';
 import { updateUserSchema } from '../validation/auth.js';
 import { env } from '../utils/env.js';
 import { uploadToCloudinary } from '../utils/uploadToCloudinary.js';
-import { requestResetToken } from '../services/auth.js';
-import { resetPassword } from '../services/auth.js';
+
+const setupSession = async (res, session) => {
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: new Date(Date.now() + FIFTEEN_MINUTES),
+  });
+
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: new Date(Date.now() + THIRTY_DAYS),
+  });
+};
 
 export const registerUserController = async (req, res) => {
-  const { name, email } = req.body;
+  const { email } = req.body;
   const user = await findUserByEmail(email);
   if (user) {
     throw createHttpError(409, 'User with this email is already exist!');
@@ -25,7 +40,6 @@ export const registerUserController = async (req, res) => {
   res.status(201).json({
     token: newUser.token,
     user: {
-      name,
       email,
     },
   });
@@ -47,6 +61,11 @@ export const loginUserController = async (req, res) => {
     user: {
       name: updatedUser.name,
       email: updatedUser.email,
+      avatar: updatedUser.avatar,
+      gender: updatedUser.gender,
+      weight: updatedUser.weight,
+      activeTime: updatedUser.activeTime,
+      dailyNorm: updatedUser.dailyNorm,
     },
   });
 };
@@ -143,5 +162,29 @@ export const resetPasswordController = async (req, res) => {
     message: 'Password was successfully reset!',
     status: 200,
     data: {},
+  });
+};
+
+export const getGoogleOAuthUrlController = async (req, res) => {
+  const url = generateAuthUrl();
+  res.json({
+    status: 200,
+    message: 'Successfully get Google OAuth url!',
+    data: {
+      url,
+    },
+  });
+};
+
+export const loginWithGoogleController = async (req, res) => {
+  const session = await loginOrSignupWithGoogle(req.body.code);
+  setupSession(res, session);
+
+  res.json({
+    status: 200,
+    message: 'Successfully logged in via Google OAuth!',
+    data: {
+      token: session.accessToken,
+    },
   });
 };

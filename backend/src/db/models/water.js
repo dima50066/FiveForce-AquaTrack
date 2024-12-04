@@ -1,6 +1,6 @@
 import { Schema, model, Types } from 'mongoose';
 
-const startDate = new Date('01/01/2024');
+const startDate = new Date('01/01/2023');
 
 const unixDay = 86400000;
 

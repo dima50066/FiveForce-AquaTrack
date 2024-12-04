@@ -1,147 +1,65 @@
 import {
-  createWater,
-  deleteWater,
-  updateWater,
-  getDayWater,
-  getMonthWater,
-  getSummaryAmount,
+  createWaterService,
+  deleteWaterService,
+  updateWaterService,
+  getDayWaterService,
+  getMonthWaterService,
+  getSummaryAmountService,
 } from '../services/water.js';
-import createHttpError from 'http-errors';
-import { Water } from '../db/models/water.js';
 
-export const createWaterController = async (req, res) => {
+export const createWater = async (req, res, next) => {
   try {
-    const { date, amount } = req.body;
-    const { _id: owner } = req.user;
-
-    if (!date || !amount) {
-      return res.status(400).json({ message: 'Missing required fields' });
-    }
-
-    const newWater = await createWater(date, amount, owner);
-    res.status(201).json(newWater);
+    const result = await createWaterService(req.body, req.user._id);
+    res.status(201).json(result);
   } catch (error) {
-    res.status(500).json({
-      message: 'Error while creating water record',
-      error: error.message,
-    });
+    next(error);
   }
 };
 
-export const updateWaterController = async (req, res) => {
+export const deleteWater = async (req, res, next) => {
   try {
-    const { waterId } = req.params;
-    const { date, amount } = req.body;
-    const { _id: owner } = req.user;
-
-    if (!waterId) {
-      return res.status(400).json({ message: 'Missing waterId parameter' });
-    }
-
-    const waterRecord = await Water.findById(waterId);
-    if (!waterRecord || waterRecord.owner.toString() !== owner.toString()) {
-      return res
-        .status(403)
-        .json({ message: 'Access denied or record not found' });
-    }
-
-    const updatedWater = await updateWater(waterId, { date, amount });
-    res.status(200).json(updatedWater);
+    const result = await deleteWaterService(req.params.id, req.user._id);
+    res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({
-      message: 'Error while updating water record',
-      error: error.message,
-    });
+    next(error);
   }
 };
 
-export const deleteWaterController = async (req, res) => {
+export const updateWater = async (req, res, next) => {
   try {
-    const { waterId } = req.params;
-    const { _id: owner } = req.user;
-
-    if (!waterId) {
-      return res.status(400).json({ message: 'Missing waterId parameter' });
-    }
-
-    const waterRecord = await Water.findById(waterId);
-    if (!waterRecord || waterRecord.owner.toString() !== owner.toString()) {
-      return res
-        .status(403)
-        .json({ message: 'Access denied or record not found' });
-    }
-
-    const deletedWater = await deleteWater(waterId);
-    res.status(200).json(deletedWater);
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error while deleting water record',
-      error: error.message,
-    });
-  }
-};
-
-export const getDayWaterController = async (req, res, next) => {
-  try {
-    const userId = req.user.id;
-    const { date } = req.query;
-    const { timezone = 'UTC' } = req.query;
-
-    if (!date) {
-      throw createHttpError(400, 'Date parameter is required');
-    }
-
-    const { curDaylyNorm, totalAmount } = await getDayWater(
-      userId,
-      date,
-      timezone,
+    const result = await updateWaterService(
+      req.params.id,
+      req.body,
+      req.user._id,
     );
-
-    // if (!curDaylyNorm.length) {
-    //   return res
-    //     .status(404)
-    //     .json({ message: 'No water consumption records found for this day.' });
-    // }
-
-    res
-      .status(200)
-      .json({ date: new Date(Number(date)), totalAmount, curDaylyNorm });
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }
 };
 
-export const getMonthWaterController = async (req, res, next) => {
+export const getDayWater = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    const { date } = req.query;
-    const { timezone = 'UTC' } = req.query;
-
-    if (!date) {
-      throw createHttpError(400, 'Date parameter is required');
-    }
-
-    const monthData = await getMonthWater(userId, date, timezone);
-
-    res.status(200).json(monthData);
+    const result = await getDayWaterService(req.params.date, req.user);
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }
 };
 
-export const getSummaryAmountController = async (req, res, next) => {
+export const getMonthWater = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    const { date, dailyNorm } = req.query;
-    const { timezone = 'UTC' } = req.query;
+    const result = await getMonthWaterService(req.params.date, req.user);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
 
-    if (!date || !dailyNorm) {
-      throw createHttpError(400, 'Date and dailyNorm parameters are required');
-    }
-
-    const summary = await getSummaryAmount(userId, date, dailyNorm, timezone);
-
-    res.status(200).json(summary);
+export const getSummaryAmount = async (req, res, next) => {
+  try {
+    const result = await getSummaryAmountService(req.user._id);
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }

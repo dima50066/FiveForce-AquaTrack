@@ -1,173 +1,135 @@
 import { Water } from '../db/models/water.js';
-import {
-  startOfDay,
-  endOfDay,
-  fromUnixTime,
-  startOfMonth,
-  endOfMonth,
-  format,
-} from 'date-fns';
-import { fromZonedTime, toZonedTime } from 'date-fns-tz';
+import createHttpError from 'http-errors';
+import { startOfMonth, endOfMonth, getDaysInMonth } from 'date-fns';
 
-export const createWater = async (date, amount, owner) => {
-  try {
-    const newWaterRecord = new Water({
-      date,
-      amount,
-      owner,
-    });
-
-    await newWaterRecord.save();
-    return newWaterRecord;
-  } catch (error) {
-    throw new Error('Error while creating water record: ' + error.message);
-  }
+export const createWaterService = async ({ date, amount }, owner) => {
+  const water = await Water.create({ date, amount, owner });
+  return water;
 };
 
-export const deleteWater = async (waterId) => {
-  try {
-    const deletedWater = await Water.findByIdAndDelete(waterId);
-
-    if (!deletedWater) {
-      throw new Error('Water record not found');
-    }
-
-    return deletedWater;
-  } catch (error) {
-    throw new Error('Error while deleting water record: ' + error.message);
-  }
+export const deleteWaterService = async (id, owner) => {
+  const result = await Water.findOneAndDelete({ _id: id, owner });
+  if (!result) throw createHttpError(404, 'Not found');
+  return result;
 };
 
-export const updateWater = async (waterId, newData) => {
-  try {
-    const updatedWater = await Water.findByIdAndUpdate(waterId, newData, {
-      new: true,
-    });
-
-    if (!updatedWater) {
-      throw new Error('Water record not found');
-    }
-
-    return updatedWater;
-  } catch (error) {
-    throw new Error('Error while updating water record: ' + error.message);
-  }
+export const updateWaterService = async (id, { date, amount }, owner) => {
+  const result = await Water.findByIdAndUpdate(
+    id,
+    { date, amount, owner },
+    { new: true },
+  );
+  if (!result) throw createHttpError(404, 'Not found');
+  return result;
 };
 
-export const getDayWater = async (userId, date, timezone = 'UTC') => {
-  const startOfDayUTC = fromUnixTime(Number(date) / 1000);
-  console.log('Start of day (UTC):', startOfDayUTC);
-
-  const startOfDayInUTC = startOfDay(startOfDayUTC);
-  const endOfDayInUTC = endOfDay(startOfDayUTC);
-
-  console.log('Start of day (UTC):', startOfDayInUTC);
-  console.log('End of day (UTC):', endOfDayInUTC);
-
-  const startOfDayTimestamp = startOfDayInUTC.getTime();
-  const endOfDayTimestamp = endOfDayInUTC.getTime();
-
-  const curDaylyNorm = await Water.find({
-    owner: userId,
-    date: {
-      $gte: startOfDayTimestamp,
-      $lte: endOfDayTimestamp,
-    },
-  }).select('date amount');
-
-  if (!curDaylyNorm.length) {
-    return { curDaylyNorm: [], totalAmount: 0 };
+export const getDayWaterService = async (dateParam, user) => {
+  if (isNaN(dateParam)) {
+    throw createHttpError(400, 'Invalid date format: date must be a number.');
   }
 
-  const totalAmount = curDaylyNorm.reduce(
-    (sum, record) => sum + record.amount,
+  const owner = user._id;
+  const userTimezoneOffset = user.timezoneOffset || 0;
+
+  const startOfDay = new Date(Number(dateParam));
+  startOfDay.setHours(0 - userTimezoneOffset / 60, 0, 0, 0);
+
+  const endOfDay = new Date(Number(dateParam));
+  endOfDay.setHours(23 - userTimezoneOffset / 60, 59, 59, 999);
+
+  const utcStart = startOfDay.getTime();
+  const utcEnd = endOfDay.getTime();
+
+  const foundWaterDayData = await Water.find({
+    owner,
+    date: { $gte: utcStart, $lt: utcEnd },
+  });
+
+  if (!foundWaterDayData || foundWaterDayData.length === 0) {
+    throw createHttpError(404, 'No data found for the specified day.');
+  }
+
+  const totalDayWater = foundWaterDayData.reduce(
+    (acc, item) => acc + item.amount,
     0,
   );
 
-  return { curDaylyNorm, totalAmount };
+  return {
+    date: new Date(Number(dateParam)),
+    totalDayWater,
+    WaterData: foundWaterDayData,
+    owner,
+  };
 };
 
-export const getMonthWater = async (userId, date, timezone = 'UTC') => {
-  const startOfMonthUTC = fromUnixTime(Number(date) / 1000);
+export const getMonthWaterService = async (dateParam, user) => {
+  if (isNaN(dateParam)) {
+    throw createHttpError(400, 'Invalid date format: date must be a number.');
+  }
 
-  const startOfMonthInUTC = startOfMonth(startOfMonthUTC);
-  const endOfMonthInUTC = endOfMonth(startOfMonthUTC);
+  const owner = user._id;
 
-  console.log('Start of month (UTC):', startOfMonthInUTC);
-  console.log('End of month (UTC):', endOfMonthInUTC);
+  const startOfMonthDate = startOfMonth(new Date(Number(dateParam)));
+  const endOfMonthDate = endOfMonth(new Date(Number(dateParam)));
 
-  const startOfMonthTimestamp = startOfMonthInUTC.getTime();
-  const endOfMonthTimestamp = endOfMonthInUTC.getTime();
+  const utcStartTime = startOfMonthDate.getTime();
+  const utcEndTime = endOfMonthDate.getTime();
 
-  const records = await Water.find({
-    owner: userId,
-    date: {
-      $gte: startOfMonthTimestamp,
-      $lte: endOfMonthTimestamp,
-    },
-  }).select('date amount');
+  const foundWaterMonthData = await Water.find({
+    owner,
+    date: { $gte: utcStartTime, $lt: utcEndTime },
+  });
 
-  const groupedByDay = records.reduce((acc, record) => {
-    const day = format(new Date(record.date), 'yyyy-MM-dd');
-    if (!acc[day]) acc[day] = 0;
-    acc[day] += record.amount;
+  const aggregatedMonthlyData = foundWaterMonthData.reduce((acc, item) => {
+    const date = new Date(item.date);
+    const dayOfMonth = date.getUTCDate();
+    if (!acc[dayOfMonth]) {
+      acc[dayOfMonth] = {
+        dateParam: new Date(
+          Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), dayOfMonth),
+        ).toISOString(),
+        totalDayWater: 0,
+      };
+    }
+    acc[dayOfMonth].totalDayWater += item.amount;
     return acc;
   }, {});
 
-  const daysInMonth = [];
-  for (
-    let day = startOfMonthInUTC;
-    day <= endOfMonthInUTC;
-    day = new Date(day.setDate(day.getDate() + 1))
-  ) {
-    const dayStr = format(day, 'yyyy-MM-dd');
-    daysInMonth.push({
-      date: dayStr,
-      totalAmount: groupedByDay[dayStr] || 0,
-    });
+  const daysInMonth = getDaysInMonth(new Date(Number(dateParam)));
+  const result = [];
+  for (let i = 1; i <= daysInMonth; i++) {
+    if (aggregatedMonthlyData[i]) {
+      result.push(aggregatedMonthlyData[i]);
+    } else {
+      const date = new Date(
+        Date.UTC(
+          new Date(Number(dateParam)).getUTCFullYear(),
+          new Date(Number(dateParam)).getUTCMonth(),
+          i,
+        ),
+      );
+      result.push({ dateParam: date.toISOString(), totalDayWater: 0 });
+    }
   }
-
-  return daysInMonth;
+  return result;
 };
 
-export const getSummaryAmount = async (
-  userId,
-  date,
-  dailyNorm,
-  timezone = 'UTC',
-) => {
-  const startOfDayUTC = fromUnixTime(Number(date) / 1000);
+export const getSummaryAmountService = async (owner) => {
+  const startOfDay = new Date().setHours(0, 0, 0, 0);
+  const endOfDay = new Date().setHours(23, 59, 59, 999);
 
-  const startOfDayInUTC = startOfDay(startOfDayUTC);
-  const endOfDayInUTC = endOfDay(startOfDayUTC);
+  const todayDrinkWater = await Water.find({
+    owner,
+    date: { $gte: startOfDay, $lt: endOfDay },
+  });
 
-  const startOfDayTimestamp = startOfDayInUTC.getTime();
-  const endOfDayTimestamp = endOfDayInUTC.getTime();
-
-  const records = await Water.find({
-    owner: userId,
-    date: {
-      $gte: startOfDayTimestamp,
-      $lte: endOfDayTimestamp,
-    },
-  }).select('date amount');
-
-  const totalAmount = records.reduce((sum, record) => sum + record.amount, 0);
-
-  if (!dailyNorm) {
-    throw new Error('Daily norm is required');
+  if (!todayDrinkWater || todayDrinkWater.length === 0) {
+    throw createHttpError(404, 'No water data found for today');
   }
 
-  const dailyPercentage = (totalAmount / dailyNorm) * 100;
-
-  const currentDate = new Date(Number(date));
-  const formattedDate = `${currentDate.getFullYear()}-${String(
-    currentDate.getMonth() + 1,
-  ).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
-
-  return {
-    date: formattedDate,
-    totalAmount,
-    dailyPercentage,
-  };
+  const totalAmount = todayDrinkWater.reduce(
+    (sum, record) => sum + record.amount,
+    0,
+  );
+  return { totalAmount };
 };

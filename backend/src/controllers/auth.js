@@ -5,30 +5,19 @@ import {
   createUser,
   findUserByEmail,
   logoutUser,
-  updateUserWithToken,
   requestResetToken,
   resetPassword,
   loginOrSignupWithGoogle,
+  createActiveSession,
+  refreshSession,
 } from '../services/auth.js';
 import bcrypt from 'bcrypt';
 import { UsersCollection } from '../db/models/user.js';
 import { generateAuthUrl } from '../utils/googleOAuth2.js';
-import { THIRTY_DAYS, FIFTEEN_MINUTES } from '../constants/index.js';
 import { updateUserSchema } from '../validation/auth.js';
 import { env } from '../utils/env.js';
 import { uploadToCloudinary } from '../utils/uploadToCloudinary.js';
-
-const setupSession = async (res, session) => {
-  res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
-    expires: new Date(Date.now() + FIFTEEN_MINUTES),
-  });
-
-  res.cookie('sessionId', session._id, {
-    httpOnly: true,
-    expires: new Date(Date.now() + THIRTY_DAYS),
-  });
-};
+import { setupCookies } from '../utils/setupCookies.js';
 
 export const registerUserController = async (req, res) => {
   const { email } = req.body;
@@ -36,9 +25,8 @@ export const registerUserController = async (req, res) => {
   if (user) {
     throw createHttpError(409, 'User with this email is already exist!');
   }
-  const newUser = await createUser(req.body);
+  await createUser(req.body);
   res.status(201).json({
-    token: newUser.token,
     user: {
       email,
     },
@@ -54,25 +42,33 @@ export const loginUserController = async (req, res) => {
   if (!isCorrectPassword) {
     throw createHttpError(404, 'Credentials are wrong');
   }
-  const updatedUser = await updateUserWithToken(user._id);
+  const session = await createActiveSession(user._id);
+  setupCookies(res, session);
 
   res.status(201).json({
-    token: updatedUser.token,
-    user: {
-      name: updatedUser.name,
-      email: updatedUser.email,
-      avatar: updatedUser.avatar,
-      gender: updatedUser.gender,
-      weight: updatedUser.weight,
-      activeTime: updatedUser.activeTime,
-      dailyNorm: updatedUser.dailyNorm,
+    token: session.accessToken,
+    user,
+  });
+};
+
+export const refreshSessionController = async (req, res) => {
+  const { sessionId, refreshToken } = req.cookies;
+  const session = await refreshSession(sessionId, refreshToken);
+  setupCookies(res, session);
+  res.json({
+    status: 200,
+    message: 'Successfully refreshed a session!',
+    data: {
+      token: session.accessToken,
     },
   });
 };
 
 export const logoutUserController = async (req, res) => {
-  await logoutUser(req.user._id);
-
+  const { sessionId, refreshToken } = req.cookies;
+  await logoutUser(sessionId, refreshToken);
+  res.clearCookie('sessionId');
+  res.clearCookie('refreshToken');
   res.sendStatus(204);
 };
 
@@ -178,7 +174,7 @@ export const getGoogleOAuthUrlController = async (req, res) => {
 
 export const loginWithGoogleController = async (req, res) => {
   const session = await loginOrSignupWithGoogle(req.body.code);
-  setupSession(res, session);
+  setupCookies(res, session);
 
   res.json({
     status: 200,

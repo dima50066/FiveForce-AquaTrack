@@ -1,23 +1,30 @@
-import HttpError from "../helpers/HttpError.js";
+import createHttpError from 'http-errors';
 
 export const WaterDate = async (req, res, next) => {
   try {
     const { date } = req.params;
 
-    const startDate = new Date("2023-01-01").getTime();
+    // Перевіряємо, чи значення є числом
+    if (isNaN(date)) {
+      throw createHttpError(400, 'Invalid date format: date must be a number.');
+    }
+
+    const numericDate = Number(date); // Явне перетворення
+
+    const startDate = new Date('2023-01-01').getTime();
     const unixDay = 86400000;
 
-    const currentDate = new Date();
-    const unixCurrentDate = currentDate.getTime();
+    const currentDate = Date.now();
 
-    if (isNaN(+date) || !Number.isInteger(+date))
-      throw HttpError(400, "Invalid date format");
+    if (numericDate < startDate) {
+      throw createHttpError(400, 'Date must be no earlier than 2023-01-01.');
+    }
 
-    if (+date < startDate)
-      throw HttpError(400, "Date must start from 2023/01/01");
+    if (numericDate > currentDate + unixDay) {
+      throw createHttpError(400, 'Date cannot be in the future.');
+    }
 
-    if (+date > unixCurrentDate + unixDay)
-      throw HttpError(400, "Date from future");
+    req.params.date = numericDate; // Оновлюємо параметр, перетворюючи його на число
     next();
   } catch (error) {
     next(error);
@@ -28,13 +35,20 @@ export const WaterMonth = async (req, res, next) => {
   try {
     const { date } = req.params;
 
-    const startDate = new Date("2023-01-01").getTime();
+    // Перевіряємо, чи значення є числом
+    if (isNaN(date)) {
+      throw createHttpError(400, 'Invalid date format: date must be a number.');
+    }
 
-    if (isNaN(+date) || !Number.isInteger(+date))
-      throw HttpError(400, "Invalid date format");
+    const numericDate = Number(date); // Явне перетворення
 
-    if (+date < startDate)
-      throw HttpError(400, "Date must start from 2023/01/01");
+    const startDate = new Date('2023-01-01').getTime(); // Початкова дата
+
+    if (numericDate < startDate) {
+      throw createHttpError(400, 'Date must be no earlier than 2023-01-01.');
+    }
+
+    req.params.date = numericDate; // Оновлюємо параметр, перетворюючи його на число
     next();
   } catch (error) {
     next(error);

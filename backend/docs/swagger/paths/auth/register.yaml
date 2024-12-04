@@ -10,17 +10,13 @@ requestBody:
       schema:
         type: object
         properties:
-          name:
-            type: string
-            example: John Doe
           email:
             type: string
-            example: john.doe@example.com
+            example: johndoe@email.com
           password:
             type: string
             example: securePassword123
         required:
-          - name
           - email
           - password
 responses:

@@ -1,8 +1,8 @@
 type: object
 properties:
   date:
-    type: integer
-    format: date
+    type: string
+    format: date-time
     description: Date of the water intake. The value must be a UNIX timestamp in milliseconds, representing a valid date.
   amount:
     type: number

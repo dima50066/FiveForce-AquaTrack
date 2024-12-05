@@ -47,8 +47,8 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-  # schemas:
-  # User:
-  #   $ref: './swagger/components/schemas/userSchema.yaml'
-  # Water:
-  #   $ref: './swagger/components/schemas/waterSchema.yaml'
+  schemas:
+    User:
+      $ref: './swagger/components/schemas/userSchema.yaml'
+    Water:
+      $ref: './swagger/components/schemas/waterSchema.yaml'

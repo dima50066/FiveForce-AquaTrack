@@ -36,6 +36,7 @@ export const SWAGGER_PATH = path.join(
   'backend',
   'docs',
   'swagger.json',
+  // 'openapi.yaml',
 );
 
 export const PORT = process.env.PORT || 3000; // !!!!!!!!!!!!!

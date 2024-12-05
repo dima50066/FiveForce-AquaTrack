@@ -36,19 +36,24 @@ export const SWAGGER_PATH = path.join(
   'backend',
   'docs',
   'swagger.json',
-  // 'openapi.yaml',
 );
 
-export const PORT = process.env.PORT || 3000; // !!!!!!!!!!!!!
-// export const PORT = process.env.PORT || 5000;
+export const PORT = process.env.PORT || 5000;
 export const NODE_ENV = process.env.NODE_ENV || 'development';
 
 export const LOGGER_CONFIG =
   NODE_ENV === 'production'
-    ? undefined
+    ? {
+        level: 'info',
+      }
     : {
         transport: {
           target: 'pino-pretty',
+          options: {
+            colorize: true,
+            translateTime: 'SYS:standard',
+            ignore: 'pid,hostname',
+          },
         },
       };
 

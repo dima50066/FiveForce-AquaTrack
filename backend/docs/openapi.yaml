@@ -13,8 +13,7 @@ tags:
   - name: Water
     description: Operations about water.
 servers:
-  # - url: https://five-force-aqua-track.vercel.app
-  - url: http://localhost:5000
+  - url: https://fiveforce-aquatrack.onrender.com
 paths:
   /users/register:
     post:

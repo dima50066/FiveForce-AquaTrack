@@ -58,6 +58,6 @@ export const LOGGER_CONFIG =
       };
 
 export const CORS_OPTIONS = {
-  origin: process.env.CLIENT_URL || '*',
+  origin: ['https://fiveforce.vercel.app', 'http://localhost:3000'],
   credentials: true,
 };

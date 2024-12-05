@@ -58,6 +58,6 @@ export const LOGGER_CONFIG =
       };
 
 export const CORS_OPTIONS = {
-  origin: 'https://five-force-fronted.vercel.app'
+  origin: 'https://five-force-fronted.vercel.app',
   credentials: true,
 };

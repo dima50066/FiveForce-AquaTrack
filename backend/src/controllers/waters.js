@@ -1,74 +1,66 @@
-import { createWater, deleteWater, updateWater } from '../services/water.js';
-import { Water } from '../db/models/water.js';
+import {
+  createWaterService,
+  deleteWaterService,
+  updateWaterService,
+  getDayWaterService,
+  getMonthWaterService,
+  getSummaryAmountService,
+} from '../services/water.js';
 
-export const createWaterController = async (req, res) => {
+export const createWater = async (req, res, next) => {
   try {
-    const { date, amount } = req.body;
-    const { _id: owner } = req.user;
-
-    if (!date || !amount) {
-      return res.status(400).json({ message: 'Missing required fields' });
-    }
-
-    const newWater = await createWater(date, amount, owner);
-    res.status(201).json(newWater);
+    const result = await createWaterService(req.body, req.user._id);
+    res.status(201).json(result);
   } catch (error) {
-    res.status(500).json({
-      message: 'Error while creating water record',
-      error: error.message,
-    });
+    next(error);
   }
 };
 
-export const updateWaterController = async (req, res) => {
+export const deleteWater = async (req, res, next) => {
   try {
-    const { waterId } = req.params;
-    const { date, amount } = req.body;
-    const { _id: owner } = req.user;
-
-    if (!waterId) {
-      return res.status(400).json({ message: 'Missing waterId parameter' });
-    }
-
-    const waterRecord = await Water.findById(waterId);
-    if (!waterRecord || waterRecord.owner.toString() !== owner.toString()) {
-      return res
-        .status(403)
-        .json({ message: 'Access denied or record not found' });
-    }
-
-    const updatedWater = await updateWater(waterId, { date, amount });
-    res.status(200).json(updatedWater);
+    const result = await deleteWaterService(req.params.id, req.user._id);
+    res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({
-      message: 'Error while updating water record',
-      error: error.message,
-    });
+    next(error);
   }
 };
 
-export const deleteWaterController = async (req, res) => {
+export const updateWater = async (req, res, next) => {
   try {
-    const { waterId } = req.params;
-    const { _id: owner } = req.user;
-
-    if (!waterId) {
-      return res.status(400).json({ message: 'Missing waterId parameter' });
-    }
-
-    const waterRecord = await Water.findById(waterId);
-    if (!waterRecord || waterRecord.owner.toString() !== owner.toString()) {
-      return res
-        .status(403)
-        .json({ message: 'Access denied or record not found' });
-    }
-
-    const deletedWater = await deleteWater(waterId);
-    res.status(200).json(deletedWater);
+    const result = await updateWaterService(
+      req.params.id,
+      req.body,
+      req.user._id,
+    );
+    res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({
-      message: 'Error while deleting water record',
-      error: error.message,
-    });
+    next(error);
+  }
+};
+
+export const getDayWater = async (req, res, next) => {
+  try {
+    const result = await getDayWaterService(req.params.date, req.user);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMonthWater = async (req, res, next) => {
+  try {
+    const result = await getMonthWaterService(req.params.date, req.user);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSummaryAmount = async (req, res, next) => {
+  try {
+    const result = await getSummaryAmountService(req.user._id);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
   }
 };

@@ -38,7 +38,7 @@ export const SWAGGER_PATH = path.join(
   'swagger.json',
 );
 
-export const PORT = process.env.PORT || 5000;
+export const PORT = process.env.PORT || 3000;
 export const NODE_ENV = process.env.NODE_ENV || 'development';
 
 export const LOGGER_CONFIG =
@@ -58,6 +58,6 @@ export const LOGGER_CONFIG =
       };
 
 export const CORS_OPTIONS = {
-  origin: process.env.CLIENT_URL || '*',
+  origin: 'https://five-force-fronted.vercel.app/',
   credentials: true,
 };

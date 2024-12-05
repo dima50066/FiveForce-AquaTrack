@@ -24,8 +24,8 @@ responses:
               example: 'john.doe@example.com'
             gender:
               type: string
-              enum: [Woman, Man]
-              example: 'Woman'
+              enum: [woman, man]
+              example: 'woman'
             weight:
               type: number
               example: 70
@@ -35,5 +35,9 @@ responses:
             dailyNorm:
               type: number
               example: 2500
+            avatar:
+              type: string
+              example: 'https://example.com/path/to/avatar.jpg'
+              description: URL to user's avatar
   '401':
     $ref: '../../../components/responses/401.yaml'

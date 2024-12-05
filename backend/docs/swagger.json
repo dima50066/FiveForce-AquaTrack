@@ -11,10 +11,7 @@
   },
   "servers": [
     {
-      "url": "https://five-force-aqua-track.vercel.app"
-    },
-    {
-      "url": "http://localhost:5000"
+      "url": "https://fiveforce-aquatrack.onrender.com"
     }
   ],
   "tags": [
@@ -43,13 +40,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
-                    "type": "string",
-                    "example": "John Doe"
-                  },
                   "email": {
                     "type": "string",
-                    "example": "john.doe@example.com"
+                    "example": "johndoe@email.com"
                   },
                   "password": {
                     "type": "string",
@@ -57,7 +50,6 @@
                   }
                 },
                 "required": [
-                  "name",
                   "email",
                   "password"
                 ]
@@ -100,6 +92,7 @@
                 "properties": {
                   "email": {
                     "type": "string",
+                    "format": "email",
                     "example": "john.doe@example.com"
                   },
                   "password": {
@@ -117,10 +110,64 @@
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/200"
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "description": "JWT token for authentication"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "User's full name"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "description": "User's email address"
+                        },
+                        "avatar": {
+                          "type": "string",
+                          "description": "URL of the user's avatar image"
+                        },
+                        "gender": {
+                          "type": "string",
+                          "enum": [
+                            "woman",
+                            "man"
+                          ],
+                          "description": "User's gender"
+                        },
+                        "weight": {
+                          "type": "integer",
+                          "description": "User's weight in kg"
+                        },
+                        "activeTime": {
+                          "type": "integer",
+                          "description": "User's total active time in hours"
+                        },
+                        "dailyNorm": {
+                          "type": "integer",
+                          "description": "User's daily water intake norm in ml"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
           }
         },
         "security": [
@@ -189,10 +236,10 @@
                     "gender": {
                       "type": "string",
                       "enum": [
-                        "Woman",
-                        "Man"
+                        "woman",
+                        "man"
                       ],
-                      "example": "Woman"
+                      "example": "woman"
                     },
                     "weight": {
                       "type": "number",
@@ -205,6 +252,11 @@
                     "dailyNorm": {
                       "type": "number",
                       "example": 2500
+                    },
+                    "avatar": {
+                      "type": "string",
+                      "example": "https://example.com/path/to/avatar.jpg",
+                      "description": "URL to user's avatar"
                     }
                   }
                 }
@@ -434,10 +486,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/waterSchema"
-                  }
+                  "$ref": "#/components/schemas/waterSchema"
                 }
               }
             }
@@ -501,6 +550,90 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "User": {
+        "$ref": "#/components/schemas/userSchema"
+      },
+      "Water": {
+        "$ref": "#/components/schemas/waterSchema"
+      },
+      "waterSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of the water intake. The value must be a UNIX timestamp in milliseconds, representing a valid date."
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 10,
+            "maximum": 3000,
+            "description": "Amount of water consumed in milliliters. Should be between 10 and 3000 ml."
+          },
+          "owner": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier (UUID) of the user who made the entry."
+          }
+        },
+        "required": [
+          "date",
+          "amount",
+          "owner"
+        ]
+      },
+      "userSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 20,
+            "description": "Name of the user. Must be between 3 and 20 characters."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the user. Should be a valid email format."
+          },
+          "avatar": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the user's avatar image. Must be a valid URL."
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "woman",
+              "man"
+            ],
+            "description": "Gender of the user. Must be either 'woman' or 'man' (in lowercase)."
+          },
+          "weight": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 500,
+            "description": "Weight of the user in kilograms. Should be between 0 and 500 kg."
+          },
+          "activeTime": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Active time of the user in hours. Should be a positive number."
+          },
+          "dailyNorm": {
+            "type": "number",
+            "minimum": 1500,
+            "maximum": 5000,
+            "description": "Daily water intake norm for the user in milliliters. Should be between 1500 and 5000 ml."
+          }
+        },
+        "required": [
+          "name",
+          "email"
+        ]
       }
     },
     "responses": {
@@ -708,29 +841,6 @@
             }
           }
         }
-      }
-    },
-    "schemas": {
-      "waterSchema": {
-        "type": "object",
-        "properties": {
-          "date": {
-            "type": "integer",
-            "format": "date"
-          },
-          "amount": {
-            "type": "number"
-          },
-          "owner": {
-            "type": "string",
-            "format": "uuid"
-          }
-        },
-        "required": [
-          "date",
-          "amount",
-          "owner"
-        ]
       }
     }
   }

@@ -43,10 +43,17 @@ export const NODE_ENV = process.env.NODE_ENV || 'development';
 
 export const LOGGER_CONFIG =
   NODE_ENV === 'production'
-    ? undefined
+    ? {
+        level: 'info',
+      }
     : {
         transport: {
           target: 'pino-pretty',
+          options: {
+            colorize: true,
+            translateTime: 'SYS:standard',
+            ignore: 'pid,hostname',
+          },
         },
       };
 

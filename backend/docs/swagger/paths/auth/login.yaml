@@ -12,6 +12,7 @@ requestBody:
         properties:
           email:
             type: string
+            format: email
             example: john.doe@example.com
           password:
             type: string
@@ -21,8 +22,44 @@ requestBody:
           - password
 responses:
   '200':
-    $ref: '../../components/responses/200.yaml'
+    description: Login successful
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            token:
+              type: string
+              description: JWT token for authentication
+            user:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: User's full name
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                avatar:
+                  type: string
+                  description: URL of the user's avatar image
+                gender:
+                  type: string
+                  enum: [woman, man]
+                  description: User's gender
+                weight:
+                  type: integer
+                  description: User's weight in kg
+                activeTime:
+                  type: integer
+                  description: User's total active time in hours
+                dailyNorm:
+                  type: integer
+                  description: User's daily water intake norm in ml
   '400':
     $ref: '../../components/responses/400.yaml'
+  '404':
+    $ref: '../../components/responses/404.yaml'
 security:
   - bearerAuth: []

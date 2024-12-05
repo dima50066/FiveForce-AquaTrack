@@ -11,8 +11,6 @@ responses:
     content:
       application/json:
         schema:
-          type: array
-          items:
-            $ref: ../../components/schemas/waterSchema.yaml
+          $ref: ../../components/schemas/waterSchema.yaml
   '401':
     $ref: '../../components/responses/401.yaml'

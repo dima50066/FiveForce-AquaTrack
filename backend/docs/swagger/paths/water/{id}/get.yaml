@@ -1,26 +1,20 @@
 summary: Get water consumption record by ID
-description: Retrieve water consumption details for a specific user and date.
 operationId: getWaterById
-tags:
-  - Water
-security:
-  - bearerAuth: []
 parameters:
   - name: id
     in: path
     required: true
-    description: The unique identifier of the water consumption record.
+    description: Unique ID of the water consumption record
     schema:
       type: string
-      format: uuid
 responses:
   '200':
-    description: Successfully retrieved water consumption record
+    description: Successfully retrieved record
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas/waterSchema.yaml'
+          $ref: ../../../components/schemas/waterSchema.yaml
   '404':
-    $ref: '../../../components/responses/404.yaml'
+    $ref: ../../../components/responses/water/404Water.yaml
   '401':
-    $ref: '../../../components/responses/401.yaml'
+    $ref: ../../../components/responses/water/401Water.yaml

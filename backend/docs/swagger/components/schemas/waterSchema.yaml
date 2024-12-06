@@ -1,18 +1,13 @@
 type: object
 properties:
   date:
-    type: string
-    format: date-time
-    description: Date of the water intake. The value must be a UNIX timestamp in milliseconds, representing a valid date.
+    type: integer
+    description: 'Date of water consumption (timestamp)'
+    example: 1682342400000
   amount:
-    type: number
-    minimum: 10
-    maximum: 3000
-    description: Amount of water consumed in milliliters. Should be between 10 and 3000 ml.
-  owner:
-    type: string
-    format: uuid
-    description: Unique identifier (UUID) of the user who made the entry.
+    type: integer
+    description: 'Amount of water consumed in milliliters'
+    example: 500
 required:
   - date
   - amount

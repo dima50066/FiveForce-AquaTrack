@@ -1,0 +1,30 @@
+summary: Get water consumption data for a specific month
+operationId: getWaterByMonth
+parameters:
+  - name: date
+    in: path
+    required: true
+    description: Month in timestamp format (milliseconds)
+    schema:
+      type: integer
+responses:
+  '200':
+    description: Data for water consumption over the given month
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              dateParam:
+                type: string
+                format: date
+              totalDayWater:
+                type: integer
+  '400':
+    description: Invalid date format
+  '404':
+    $ref: '../components/responses/NotFound.yaml'
+  '401':
+    $ref: '../components/responses/Unauthorized.yaml'

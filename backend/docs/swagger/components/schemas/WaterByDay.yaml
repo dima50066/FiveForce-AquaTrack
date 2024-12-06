@@ -1,0 +1,16 @@
+type: object
+properties:
+  date:
+    type: string
+    format: date
+    description: 'Date of water consumption'
+    example: '2024-04-01'
+  totalDayWater:
+    type: integer
+    description: 'Total amount of water consumed for the day (ml)'
+    example: 2000
+  WaterData:
+    type: array
+    items:
+      $ref: './waterSchema.yaml'
+    description: 'Details of the water consumed on this day'

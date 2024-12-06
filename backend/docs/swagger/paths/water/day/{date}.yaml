@@ -1,0 +1,22 @@
+summary: Get water consumption data for a specific day
+operationId: getWaterByDay
+parameters:
+  - name: date
+    in: path
+    required: true
+    description: Date in timestamp format (milliseconds)
+    schema:
+      type: integer
+responses:
+  '200':
+    description: Data for water consumption on the given day
+    content:
+      application/json:
+        schema:
+          $ref: '../components/schemas/WaterByDay.yaml'
+  '400':
+    description: Invalid date format
+  '404':
+    $ref: '../components/responses/NotFound.yaml'
+  '401':
+    $ref: '../components/responses/Unauthorized.yaml'

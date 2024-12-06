@@ -1,28 +1,19 @@
-summary: Create a new water consumption record
-description: Add a new water consumption record for the authenticated user.
-operationId: createWaterRecord
-tags:
-  - Water
-security:
-  - bearerAuth: []
+summary: Create a water consumption record
+operationId: createWater
 requestBody:
-  description: Water consumption details to be created.
+  description: Data to create a new water consumption record
   content:
     application/json:
       schema:
-        $ref: '../../components/schemas/waterSchema.yaml'
+        $ref: ../../components/schemas/waterSchema.yaml
 responses:
   '201':
-    description: Successfully created water consumption record
+    description: Record successfully created
     content:
       application/json:
         schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: 'Water consumption record created successfully'
+          $ref: '../../components/schemas/waterSchema.yaml'
   '400':
-    $ref: '../../components/responses/400.yaml'
+    $ref: ../../components/responses/water/BadRequest.yaml
   '401':
-    $ref: '../../components/responses/401.yaml'
+    $ref: ../../components/responses/water/401Water.yaml

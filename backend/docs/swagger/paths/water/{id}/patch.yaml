@@ -1,30 +1,28 @@
 summary: Update water consumption record by ID
-description: Update the details of a specific water consumption record.
 operationId: updateWaterById
-tags:
-  - Water
-security:
-  - bearerAuth: []
 parameters:
   - name: id
     in: path
     required: true
-    description: The unique identifier of the water consumption record.
+    description: Unique ID of the water consumption record
     schema:
       type: string
-      format: uuid
 requestBody:
-  description: Water consumption details to be updated.
+  description: Data to update the water consumption record
   content:
     application/json:
       schema:
         $ref: '../../../components/schemas/waterSchema.yaml'
 responses:
   '200':
-    $ref: '../../../components/responses/200.yaml'
+    description: Successfully updated record
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/schemas/waterSchema.yaml'
   '404':
-    $ref: '../../../components/responses/404.yaml'
+    $ref: '../../../components/responses/water/404Water.yaml'
   '400':
-    $ref: '../../../components/responses/400.yaml'
+    $ref: ../../../components/responses/water/BadRequest.yaml
   '401':
-    $ref: '../../../components/responses/401.yaml'
+    $ref: '../../../components/responses/water/401Water.yaml'

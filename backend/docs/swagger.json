@@ -1,38 +1,46 @@
 {
-  "openapi": "3.1.0",
+  "openapi": "3.0.0",
   "info": {
-    "version": "1.0.0",
     "title": "My Water App",
+    "version": "1.0.0",
+    "description": "API for tracking daily water consumption and user activities.",
     "license": {
       "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-    },
-    "description": "This is a document of my water app, which tracks daily water consumption and user activities.\n"
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
   },
   "servers": [
     {
       "url": "https://fiveforce-aquatrack.onrender.com"
+    },
+    {
+      "url": "http://localhost:5000"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
     }
   ],
   "tags": [
     {
-      "name": "Auth",
-      "description": "Auth operations."
+      "name": "Water",
+      "description": "Operations related to water consumption."
     },
     {
-      "name": "Water",
-      "description": "Operations about water."
+      "name": "Auth",
+      "description": "Operations related to user authentication."
     }
   ],
   "paths": {
     "/users/register": {
       "post": {
-        "summary": "User registration",
-        "description": "Register a new user in the system.",
-        "operationId": "registerUser",
         "tags": [
           "Auth"
         ],
+        "summary": "User registration",
+        "description": "Register a new user in the system.",
+        "operationId": "registerUser",
         "requestBody": {
           "description": "User registration details.",
           "content": {
@@ -42,7 +50,7 @@
                 "properties": {
                   "email": {
                     "type": "string",
-                    "example": "johndoe@email.com"
+                    "example": "john.doe@example.com"
                   },
                   "password": {
                     "type": "string",
@@ -77,12 +85,12 @@
     },
     "/users/login": {
       "post": {
-        "summary": "User login",
-        "description": "Login with credentials to receive a JWT token.",
-        "operationId": "loginUser",
         "tags": [
           "Auth"
         ],
+        "summary": "User login",
+        "description": "Login with credentials to receive a JWT token.",
+        "operationId": "loginUser",
         "requestBody": {
           "description": "User login credentials.",
           "content": {
@@ -179,12 +187,12 @@
     },
     "/users/logout": {
       "post": {
-        "summary": "User logout",
-        "description": "Log the user out by invalidating their JWT token.",
-        "operationId": "logoutUser",
         "tags": [
           "Auth"
         ],
+        "summary": "User logout",
+        "description": "Log the user out by invalidating their JWT token.",
+        "operationId": "logoutUser",
         "responses": {
           "200": {
             "$ref": "#/components/responses/200"
@@ -202,12 +210,12 @@
     },
     "/users/current": {
       "get": {
-        "summary": "Get current user",
-        "description": "Retrieve the details of the currently authenticated user.",
-        "operationId": "getCurrentUser",
         "tags": [
           "Auth"
         ],
+        "summary": "Get current user",
+        "description": "Retrieve the details of the currently authenticated user.",
+        "operationId": "getCurrentUser",
         "security": [
           {
             "bearerAuth": []
@@ -269,12 +277,12 @@
         }
       },
       "patch": {
-        "summary": "Update current user details",
-        "description": "Update the details of the currently authenticated user.",
-        "operationId": "updateCurrentUser",
         "tags": [
           "Auth"
         ],
+        "summary": "Update current user details",
+        "description": "Update the details of the currently authenticated user.",
+        "operationId": "updateCurrentUser",
         "security": [
           {
             "bearerAuth": []
@@ -339,32 +347,25 @@
     },
     "/water/{id}": {
       "get": {
-        "summary": "Get water consumption record by ID",
-        "description": "Retrieve water consumption details for a specific user and date.",
-        "operationId": "getWaterById",
         "tags": [
           "Water"
         ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "summary": "Get water consumption record by ID",
+        "operationId": "getWaterById",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "The unique identifier of the water consumption record.",
+            "description": "Unique ID of the water consumption record",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Successfully retrieved water consumption record",
+            "description": "Successfully retrieved record",
             "content": {
               "application/json": {
                 "schema": {
@@ -374,39 +375,32 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/401"
+            "$ref": "#/components/responses/401Water"
           },
           "404": {
-            "$ref": "#/components/responses/404"
+            "$ref": "#/components/responses/404Water"
           }
         }
       },
       "patch": {
-        "summary": "Update water consumption record by ID",
-        "description": "Update the details of a specific water consumption record.",
-        "operationId": "updateWaterById",
         "tags": [
           "Water"
         ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "summary": "Update water consumption record by ID",
+        "operationId": "updateWaterById",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "The unique identifier of the water consumption record.",
+            "description": "Unique ID of the water consumption record",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             }
           }
         ],
         "requestBody": {
-          "description": "Water consumption details to be updated.",
+          "description": "Data to update the water consumption record",
           "content": {
             "application/json": {
               "schema": {
@@ -417,64 +411,64 @@
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/200"
+            "description": "Successfully updated record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/waterSchema"
+                }
+              }
+            }
           },
           "400": {
-            "$ref": "#/components/responses/400"
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "$ref": "#/components/responses/401"
+            "$ref": "#/components/responses/401Water"
           },
           "404": {
-            "$ref": "#/components/responses/404"
+            "$ref": "#/components/responses/404Water"
           }
         }
       },
       "delete": {
-        "summary": "Delete water consumption record by ID",
-        "description": "Remove a specific water consumption record from the system.",
-        "operationId": "deleteWaterById",
         "tags": [
           "Water"
         ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "summary": "Delete water consumption record by ID",
+        "operationId": "deleteWaterById",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "The unique identifier of the water consumption record.",
+            "description": "Unique ID of the water consumption record",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/200"
+            "description": "Record successfully deleted"
           },
           "401": {
-            "$ref": "#/components/responses/401"
+            "$ref": "#/components/responses/401Water"
           },
           "404": {
-            "$ref": "#/components/responses/404"
+            "$ref": "#/components/responses/404Water"
           }
         }
       }
     },
     "/water": {
       "get": {
-        "summary": "Get all water consumption records",
-        "description": "Retrieve all water consumption records for the authenticated user.",
-        "operationId": "getAllWaterRecords",
         "tags": [
           "Water"
         ],
+        "summary": "Get all water consumption records",
+        "description": "Retrieve all water consumption records for the authenticated user.",
+        "operationId": "getAllWaterRecords",
         "security": [
           {
             "bearerAuth": []
@@ -497,19 +491,13 @@
         }
       },
       "post": {
-        "summary": "Create a new water consumption record",
-        "description": "Add a new water consumption record for the authenticated user.",
-        "operationId": "createWaterRecord",
         "tags": [
           "Water"
         ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "summary": "Create a water consumption record",
+        "operationId": "createWater",
         "requestBody": {
-          "description": "Water consumption details to be created.",
+          "description": "Data to create a new water consumption record",
           "content": {
             "application/json": {
               "schema": {
@@ -520,15 +508,100 @@
         },
         "responses": {
           "201": {
-            "description": "Successfully created water consumption record",
+            "description": "Record successfully created",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Water consumption record created successfully"
+                  "$ref": "#/components/schemas/waterSchema"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Water"
+          }
+        }
+      }
+    },
+    "/water/day/{date}": {
+      "get": {
+        "summary": "Get water consumption data for a specific day",
+        "description": "Returns water consumption details for the specified day.",
+        "tags": [
+          "Water"
+        ],
+        "parameters": [
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "description": "Date in timestamp format (milliseconds).",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data for water consumption on the specified day.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WaterByDay"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid date format."
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/water/month/{date}": {
+      "get": {
+        "summary": "Get water consumption data for a specific month",
+        "description": "Returns water consumption details for the specified month.",
+        "tags": [
+          "Water"
+        ],
+        "parameters": [
+          {
+            "name": "date",
+            "in": "path",
+            "required": true,
+            "description": "Month in timestamp format (milliseconds).",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data for water consumption over the specified month.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "dateParam": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "totalDayWater": {
+                        "type": "integer"
+                      }
                     }
                   }
                 }
@@ -536,10 +609,13 @@
             }
           },
           "400": {
-            "$ref": "#/components/responses/400"
+            "description": "Invalid date format."
           },
           "401": {
             "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
           }
         }
       }
@@ -549,91 +625,8 @@
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
-        "scheme": "bearer"
-      }
-    },
-    "schemas": {
-      "User": {
-        "$ref": "#/components/schemas/userSchema"
-      },
-      "Water": {
-        "$ref": "#/components/schemas/waterSchema"
-      },
-      "waterSchema": {
-        "type": "object",
-        "properties": {
-          "date": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Date of the water intake. The value must be a UNIX timestamp in milliseconds, representing a valid date."
-          },
-          "amount": {
-            "type": "number",
-            "minimum": 10,
-            "maximum": 3000,
-            "description": "Amount of water consumed in milliliters. Should be between 10 and 3000 ml."
-          },
-          "owner": {
-            "type": "string",
-            "format": "uuid",
-            "description": "Unique identifier (UUID) of the user who made the entry."
-          }
-        },
-        "required": [
-          "date",
-          "amount",
-          "owner"
-        ]
-      },
-      "userSchema": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 3,
-            "maxLength": 20,
-            "description": "Name of the user. Must be between 3 and 20 characters."
-          },
-          "email": {
-            "type": "string",
-            "format": "email",
-            "description": "Email address of the user. Should be a valid email format."
-          },
-          "avatar": {
-            "type": "string",
-            "format": "uri",
-            "description": "URL of the user's avatar image. Must be a valid URL."
-          },
-          "gender": {
-            "type": "string",
-            "enum": [
-              "woman",
-              "man"
-            ],
-            "description": "Gender of the user. Must be either 'woman' or 'man' (in lowercase)."
-          },
-          "weight": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 500,
-            "description": "Weight of the user in kilograms. Should be between 0 and 500 kg."
-          },
-          "activeTime": {
-            "type": "number",
-            "minimum": 0,
-            "description": "Active time of the user in hours. Should be a positive number."
-          },
-          "dailyNorm": {
-            "type": "number",
-            "minimum": 1500,
-            "maximum": 5000,
-            "description": "Daily water intake norm for the user in milliliters. Should be between 1500 and 5000 ml."
-          }
-        },
-        "required": [
-          "name",
-          "email"
-        ]
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     },
     "responses": {
@@ -841,6 +834,161 @@
             }
           }
         }
+      },
+      "NotFound": {
+        "$ref": "#/components/responses/404"
+      },
+      "Unauthorized": {
+        "$ref": "#/components/responses/401"
+      },
+      "401Water": {
+        "description": "Unauthorized access",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Authentication required"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404Water": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Record not found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Bad request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Invalid date format"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "User": {
+        "$ref": "#/components/schemas/userSchema"
+      },
+      "Water": {
+        "$ref": "#/components/schemas/waterSchema"
+      },
+      "waterSchema": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "integer",
+            "description": "Date of water consumption (timestamp)",
+            "example": 1682342400000
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Amount of water consumed in milliliters",
+            "example": 500
+          }
+        },
+        "required": [
+          "date",
+          "amount",
+          "owner"
+        ]
+      },
+      "WaterByDay": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date of water consumption",
+            "example": "2024-04-01"
+          },
+          "totalDayWater": {
+            "type": "integer",
+            "description": "Total amount of water consumed for the day (ml)",
+            "example": 2000
+          },
+          "WaterData": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/waterSchema"
+            },
+            "description": "Details of the water consumed on this day"
+          }
+        }
+      },
+      "userSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 20,
+            "description": "Name of the user. Must be between 3 and 20 characters."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the user. Should be a valid email format."
+          },
+          "avatar": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the user's avatar image. Must be a valid URL."
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "woman",
+              "man"
+            ],
+            "description": "Gender of the user. Must be either 'woman' or 'man' (in lowercase)."
+          },
+          "weight": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 500,
+            "description": "Weight of the user in kilograms. Should be between 0 and 500 kg."
+          },
+          "activeTime": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Active time of the user in hours. Should be a positive number."
+          },
+          "dailyNorm": {
+            "type": "number",
+            "minimum": 1500,
+            "maximum": 5000,
+            "description": "Daily water intake norm for the user in milliliters. Should be between 1500 and 5000 ml."
+          }
+        },
+        "required": [
+          "name",
+          "email"
+        ]
       }
     }
   }

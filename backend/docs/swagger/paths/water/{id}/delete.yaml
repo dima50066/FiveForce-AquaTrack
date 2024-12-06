@@ -1,22 +1,16 @@
 summary: Delete water consumption record by ID
-description: Remove a specific water consumption record from the system.
 operationId: deleteWaterById
-tags:
-  - Water
-security:
-  - bearerAuth: []
 parameters:
   - name: id
     in: path
     required: true
-    description: The unique identifier of the water consumption record.
+    description: Unique ID of the water consumption record
     schema:
       type: string
-      format: uuid
 responses:
   '200':
-    $ref: '../../../components/responses/200.yaml'
+    description: Record successfully deleted
   '404':
-    $ref: '../../../components/responses/404.yaml'
+    $ref: ../../../components/responses/water/404Water.yaml
   '401':
-    $ref: '../../../components/responses/401.yaml'
+    $ref: ../../../components/responses/water/401Water.yaml

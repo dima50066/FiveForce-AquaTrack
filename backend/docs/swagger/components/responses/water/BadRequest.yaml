@@ -1,0 +1,9 @@
+description: 'Bad request'
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Invalid date format'

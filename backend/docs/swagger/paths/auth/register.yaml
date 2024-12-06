@@ -12,7 +12,7 @@ requestBody:
         properties:
           email:
             type: string
-            example: johndoe@email.com
+            example: john.doe@example.com
           password:
             type: string
             example: securePassword123

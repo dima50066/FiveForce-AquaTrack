@@ -1,53 +1,145 @@
-openapi: 3.1.0
+openapi: 3.0.0
 info:
-  version: 1.0.0
   title: My Water App
+  version: 1.0.0
+  description: API for tracking daily water consumption and user activities.
   license:
     name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  description: >
-    This is a document of my water app, which tracks daily water consumption and user activities.
+    url: https://www.apache.org/licenses/LICENSE-2.0
 tags:
-  - name: Auth
-    description: Auth operations.
   - name: Water
-    description: Operations about water.
+    description: Operations related to water consumption.
+  - name: Auth
+    description: Operations related to user authentication.
 servers:
   - url: https://fiveforce-aquatrack.onrender.com
-paths:
-  /users/register:
-    post:
-      $ref: './swagger/paths/auth/register.yaml'
-  /users/login:
-    post:
-      $ref: './swagger/paths/auth/login.yaml'
-  /users/logout:
-    post:
-      $ref: './swagger/paths/auth/logout.yaml'
-  /users/current:
-    get:
-      $ref: './swagger/paths/auth/current/get.yaml'
-    patch:
-      $ref: './swagger/paths/auth/current/patch.yaml'
-  /water/{id}:
-    get:
-      $ref: './swagger/paths/water/{id}/get.yaml'
-    patch:
-      $ref: './swagger/paths/water/{id}/patch.yaml'
-    delete:
-      $ref: './swagger/paths/water/{id}/delete.yaml'
-  /water:
-    get:
-      $ref: './swagger/paths/water/get.yaml'
-    post:
-      $ref: './swagger/paths/water/post.yaml'
+  - url: http://localhost:5000
+security:
+  - bearerAuth: []
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
+      bearerFormat: JWT
+  responses:
+    NotFound:
+      $ref: './swagger/components/responses/404.yaml'
+    Unauthorized:
+      $ref: './swagger/components/responses/401.yaml'
   schemas:
     User:
       $ref: './swagger/components/schemas/userSchema.yaml'
     Water:
       $ref: './swagger/components/schemas/waterSchema.yaml'
+paths:
+  # Auth Endpoints
+  /users/register:
+    post:
+      $ref: './swagger/paths/auth/register.yaml'
+      tags:
+        - Auth
+  /users/login:
+    post:
+      $ref: './swagger/paths/auth/login.yaml'
+      tags:
+        - Auth
+  /users/logout:
+    post:
+      $ref: './swagger/paths/auth/logout.yaml'
+      tags:
+        - Auth
+  /users/current:
+    get:
+      $ref: './swagger/paths/auth/current/get.yaml'
+      tags:
+        - Auth
+    patch:
+      $ref: './swagger/paths/auth/current/patch.yaml'
+      tags:
+        - Auth
+
+  # Water Endpoints
+  /water/{id}:
+    get:
+      $ref: './swagger/paths/water/{id}/get.yaml'
+      tags:
+        - Water
+    patch:
+      $ref: './swagger/paths/water/{id}/patch.yaml'
+      tags:
+        - Water
+    delete:
+      $ref: './swagger/paths/water/{id}/delete.yaml'
+      tags:
+        - Water
+  /water:
+    get:
+      $ref: './swagger/paths/water/get.yaml'
+      tags:
+        - Water
+    post:
+      $ref: './swagger/paths/water/post.yaml'
+      tags:
+        - Water
+  /water/day/{date}:
+    get:
+      summary: Get water consumption data for a specific day
+      description: Returns water consumption details for the specified day.
+      tags:
+        - Water
+      parameters:
+        - name: date
+          in: path
+          required: true
+          description: Date in timestamp format (milliseconds).
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Data for water consumption on the specified day.
+          content:
+            application/json:
+              schema:
+                $ref: swagger/components/schemas/WaterByDay.yaml
+        '400':
+          description: Invalid date format.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /water/month/{date}:
+    get:
+      summary: Get water consumption data for a specific month
+      description: Returns water consumption details for the specified month.
+      tags:
+        - Water
+      parameters:
+        - name: date
+          in: path
+          required: true
+          description: Month in timestamp format (milliseconds).
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Data for water consumption over the specified month.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    dateParam:
+                      type: string
+                      format: date
+                    totalDayWater:
+                      type: integer
+        '400':
+          description: Invalid date format.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'

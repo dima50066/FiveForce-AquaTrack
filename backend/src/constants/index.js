@@ -62,6 +62,7 @@ export const CORS_OPTIONS = {
     'https://five-force-fronted.vercel.app',
     'http://localhost:3000',
     'https://fiveforce-aquatrack.onrender.com',
+    'http://localhost:5000',
   ],
   credentials: true,
 };

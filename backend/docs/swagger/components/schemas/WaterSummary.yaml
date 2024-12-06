@@ -1,0 +1,6 @@
+type: object
+properties:
+  totalAmount:
+    type: integer
+    description: 'Total amount of water consumed for the day (ml)'
+    example: 2000

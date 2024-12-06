@@ -16,6 +16,8 @@ const userSchema = new Schema(
     },
     avatar: {
       type: String,
+      default:
+        'https://res.cloudinary.com/divyszzpf/image/upload/v1727786307/e2ft3t0ptrwg6rco1rsm.png',
     },
     gender: {
       type: String,

@@ -3,6 +3,12 @@ import createHttpError from 'http-errors';
 import { startOfMonth, endOfMonth, getDaysInMonth } from 'date-fns';
 
 export const createWaterService = async ({ date, amount }, owner) => {
+  const currentTimestamp = Date.now();
+
+  if (date > currentTimestamp) {
+    throw createHttpError(400, 'Date cannot be in the future.');
+  }
+
   const water = await Water.create({ date, amount, owner });
   return water;
 };
@@ -14,6 +20,12 @@ export const deleteWaterService = async (id, owner) => {
 };
 
 export const updateWaterService = async (id, { date, amount }, owner) => {
+  const currentTimestamp = Date.now();
+
+  if (date > currentTimestamp) {
+    throw createHttpError(400, 'Date cannot be in the future.');
+  }
+
   const result = await Water.findByIdAndUpdate(
     id,
     { date, amount, owner },

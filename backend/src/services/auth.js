@@ -69,6 +69,9 @@ export const requestResetToken = async (email) => {
   if (!user) {
     throw createHttpError(404, 'User not found');
   }
+
+  const userName = user.name || ''; // Якщо імені немає, залишаємо порожній рядок
+
   const resetToken = jwt.sign(
     {
       sub: user._id,
@@ -91,7 +94,7 @@ export const requestResetToken = async (email) => {
 
   const template = handlebars.compile(templateSource);
   const html = template({
-    name: user.name,
+    name: userName,
     link: `${env('APP_DOMAIN')}/reset-password?token=${resetToken}`,
   });
 
